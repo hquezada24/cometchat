@@ -1,0 +1,162 @@
+* {
+  box-sizing: border-box;
+}
+
+.authContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #312e81, #581c87, #be185d);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    sans-serif;
+}
+
+/* Animated background stars */
+.starsContainer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Comet animations */
+.comet {
+  position: absolute;
+  pointer-events: none;
+}
+
+.comet1 {
+  top: 2.5rem;
+  right: 2.5rem;
+}
+
+.comet2 {
+  bottom: 5rem;
+  left: 4rem;
+}
+
+.cometCore {
+  width: 8px;
+  height: 8px;
+  background: #22d3ee;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #22d3ee;
+  position: relative;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.cometCorePink {
+  background: #f472b6;
+  box-shadow: 0 0 10px #f472b6;
+  width: 6px;
+  height: 6px;
+}
+
+.cometTrail {
+  position: absolute;
+  height: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.trail1 {
+  right: 8px;
+  width: 80px;
+  background: linear-gradient(to left, #22d3ee, transparent);
+  opacity: 0.7;
+  transform: translateY(-40%) rotate(12deg);
+}
+
+.trail2 {
+  right: 8px;
+  width: 64px;
+  background: linear-gradient(to left, #67e8f9, transparent);
+  opacity: 0.5;
+  transform: translateY(-50%) rotate(12deg);
+}
+
+.trailPink {
+  right: 6px;
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(to left, #f472b6, transparent);
+  opacity: 0.6;
+  transform: translateY(-50%) rotate(12deg);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+.cosmicElement {
+  position: absolute;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.element1 {
+  top: 25%;
+  left: 2rem;
+  width: 8px;
+  height: 8px;
+  background: #fbbf24;
+  opacity: 0.8;
+}
+
+.element2 {
+  top: 75%;
+  right: 25%;
+  width: 6px;
+  height: 6px;
+  background: #67e8f9;
+  opacity: 0.6;
+}
+
+.element3 {
+  bottom: 33.333%;
+  left: 33.333%;
+  width: 4px;
+  height: 4px;
+  background: #a855f7;
+  opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 0.5rem;
+  }
+}
