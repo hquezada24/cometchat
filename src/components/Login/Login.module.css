@@ -1,0 +1,446 @@
+/* CometChatLogin.css */
+
+* {
+  box-sizing: border-box;
+}
+
+.loginContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #312e81, #581c87, #be185d);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    sans-serif;
+}
+
+/* Animated background stars */
+.starsContainer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Comet animations */
+.comet {
+  position: absolute;
+  pointer-events: none;
+}
+
+.comet1 {
+  top: 2.5rem;
+  right: 2.5rem;
+}
+
+.comet2 {
+  bottom: 5rem;
+  left: 4rem;
+}
+
+.cometCore {
+  width: 8px;
+  height: 8px;
+  background: #22d3ee;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #22d3ee;
+  position: relative;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.cometCorePink {
+  background: #f472b6;
+  box-shadow: 0 0 10px #f472b6;
+  width: 6px;
+  height: 6px;
+}
+
+.cometTrail {
+  position: absolute;
+  height: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.trail1 {
+  right: 8px;
+  width: 80px;
+  background: linear-gradient(to left, #22d3ee, transparent);
+  opacity: 0.7;
+  transform: translateY(-40%) rotate(12deg);
+}
+
+.trail2 {
+  right: 8px;
+  width: 64px;
+  background: linear-gradient(to left, #67e8f9, transparent);
+  opacity: 0.5;
+  transform: translateY(-50%) rotate(12deg);
+}
+
+.trailPink {
+  right: 6px;
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(to left, #f472b6, transparent);
+  opacity: 0.6;
+  transform: translateY(-50%) rotate(12deg);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Login wrapper */
+.loginWrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 448px;
+}
+
+.loginBackdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(34, 211, 238, 0.2),
+    rgba(168, 85, 247, 0.2)
+  );
+  filter: blur(48px);
+  border-radius: 1.5rem;
+}
+
+.loginCard {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Header */
+.loginHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logoContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(to right, #22d3ee, #a855f7);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.appTitle {
+  font-family: inherit;
+  font-size: 1.875rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #67e8f9, #c4b5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.5rem 0;
+}
+
+.appSubtitle {
+  color: #d1d5db;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Form styles */
+.loginForm {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e5e7eb;
+  margin-bottom: 0.5rem;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.formInput::placeholder {
+  color: #9ca3af;
+}
+
+.formInput:focus {
+  outline: 2px solid #22d3ee;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #22d3ee;
+}
+
+.passwordInputWrapper {
+  position: relative;
+}
+
+.passwordInput {
+  padding-right: 3rem;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 0.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.passwordToggle:hover {
+  color: white;
+}
+
+.toggleIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.formOptions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  width: 16px;
+  height: 16px;
+  accent-color: #22d3ee;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+}
+
+.checkboxLabel {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.forgotPassword {
+  font-size: 0.875rem;
+  color: #67e8f9;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.forgotPassword:hover {
+  color: #a5f3fc;
+}
+
+/* Divider */
+.divider {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+}
+
+.dividerText {
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Social login */
+.socialLogin {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.socialButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.socialButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.socialButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.socialIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Sign up link */
+.signupText {
+  margin: 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.signupLink {
+  color: #67e8f9;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.signupLink:hover {
+  color: #a5f3fc;
+}
+
+/* Additional cosmic elements */
+.cosmicElement {
+  position: absolute;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.element1 {
+  top: 25%;
+  left: 2rem;
+  width: 8px;
+  height: 8px;
+  background: #fbbf24;
+  opacity: 0.8;
+}
+
+.element2 {
+  top: 75%;
+  right: 25%;
+  width: 6px;
+  height: 6px;
+  background: #67e8f9;
+  opacity: 0.6;
+}
+
+.element3 {
+  bottom: 33.333%;
+  left: 33.333%;
+  width: 4px;
+  height: 4px;
+  background: #a855f7;
+  opacity: 0.7;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .loginContainer {
+    padding: 0.5rem;
+  }
+
+  .loginCard {
+    padding: 1.5rem;
+  }
+
+  .appTitle {
+    font-size: 1.5rem;
+  }
+
+  .logoContainer {
+    width: 48px;
+    height: 48px;
+  }
+
+  .logoIcon {
+    width: 24px;
+    height: 24px;
+  }
+}
