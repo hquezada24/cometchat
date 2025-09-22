@@ -1,0 +1,246 @@
+.container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 448px;
+}
+
+.login-backdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(34, 211, 238, 0.2),
+    rgba(168, 85, 247, 0.2)
+  );
+  filter: blur(48px);
+  border-radius: 1.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(to right, #22d3ee, #a855f7);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.app-title {
+  font-family: inherit;
+  font-size: 1.875rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #67e8f9, #c4b5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.5rem 0;
+}
+
+.app-subtitle {
+  color: #d1d5db;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.form {
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e5e7eb;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+}
+
+.form-input:focus {
+  outline: 2px solid #22d3ee;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #22d3ee;
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-input {
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: white;
+}
+
+.toggle-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox-input {
+  width: 16px;
+  height: 16px;
+  accent-color: #22d3ee;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+}
+
+.checkbox-label {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.forgot-password {
+  font-size: 0.875rem;
+  color: #67e8f9;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #a5f3fc;
+}
+
+.divider {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+}
+
+.divider-text {
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Sign up link */
+.login-text {
+  margin: 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.login-link {
+  color: #67e8f9;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #a5f3fc;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .card {
+    padding: 1.5rem;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .logo-container {
+    width: 48px;
+    height: 48px;
+  }
+
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+}

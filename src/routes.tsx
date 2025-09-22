@@ -1,5 +1,6 @@
 import App from "./App";
 import AuthLayout from "./components/AuthLayout/AuthLayout";
+import CreateAccount from "./components/CreateAccount/CreateAccount";
 import Login from "./components/Login/Login";
 
 const routes = [
@@ -9,7 +10,10 @@ const routes = [
   },
   {
     element: <AuthLayout />,
-    children: [{ path: "/login", element: <Login /> }],
+    children: [
+      { path: "/login", element: <Login /> },
+      { path: "/create-account", element: <CreateAccount /> },
+    ],
   },
 ];
 
