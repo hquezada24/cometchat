@@ -1,11 +1,12 @@
 import "./App.css";
-import Login from "./components/Login/Login";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <Login />
-    </>
+    <div className="app-container">
+      <h1>Headline</h1>
+      <Outlet />
+    </div>
   );
 }
 
