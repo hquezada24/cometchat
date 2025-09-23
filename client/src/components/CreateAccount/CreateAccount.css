@@ -110,6 +110,19 @@
   box-shadow: 0 0 0 2px #22d3ee;
 }
 
+.match-error-message {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.error {
+  border: 2px solid red;
+  outline: none;
+}
+
 .password-input-wrapper {
   position: relative;
 }

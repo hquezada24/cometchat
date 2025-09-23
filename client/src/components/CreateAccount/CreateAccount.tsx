@@ -1,8 +1,79 @@
 import "./CreateAccount.css";
+import { useState } from "react";
 import Button from "../Button/Button";
 import { MessageCircle } from "lucide-react";
 
+type AccountData = {
+  fullName: string;
+  username: string;
+  email: string;
+  password: string;
+};
+
+type AccountErrors = Partial<Record<keyof AccountData, string>>;
+
 const CreateAccount = () => {
+  const [accountData, setAccountData] = useState<AccountData>({
+    fullName: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<AccountErrors>({});
+  const [matchError, setMatchError] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  // const API_BASE_URL =
+  //  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+  const validateData = () => {
+    const errors: AccountErrors = {};
+    if (!accountData.fullName.trim()) {
+      errors.fullName = "Full name is required";
+    }
+    if (!accountData.username.trim()) {
+      errors.username = "Username is required";
+    }
+    if (!accountData.email.trim()) {
+      errors.email = "Email is required";
+    }
+    if (!accountData.password.trim()) {
+      errors.password = "Password is required";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAccountData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    // e.target is correctly typed as HTMLInputElement
+    const { value } = e.target;
+
+    setConfirmPassword(value);
+
+    if (value !== accountData.password) {
+      setMatchError(true);
+    } else {
+      setMatchError(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateData()) {
+      return;
+    }
+    alert(accountData.fullName);
+    alert(accountData.username);
+    alert(accountData.email);
+  };
+
   return (
     <div className="container">
       <div className="backdrop"></div>
@@ -16,14 +87,17 @@ const CreateAccount = () => {
           <p className="app-subtitle">Connect across the cosmos</p>
         </div>
 
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label" htmlFor="full-name">
               Full Name
             </label>
             <input
+              name="fullName"
+              value={accountData.fullName}
+              onChange={handleInputChange}
               type="text"
-              className="form-input"
+              className={`form-input ${errors.fullName ? "error" : ""}`}
               id="full-name"
               placeholder="Enter full name"
             />
@@ -33,8 +107,11 @@ const CreateAccount = () => {
               Username
             </label>
             <input
+              name="username"
+              value={accountData.username}
+              onChange={handleInputChange}
               type="text"
-              className="form-input"
+              className={`form-input ${errors.username ? "error" : ""}`}
               id="username"
               placeholder="Enter your username"
             />
@@ -44,8 +121,11 @@ const CreateAccount = () => {
               Email
             </label>
             <input
+              name="email"
+              value={accountData.email}
+              onChange={handleInputChange}
               type="email"
-              className="form-input"
+              className={`form-input ${errors.email ? "error" : ""}`}
               id="email"
               placeholder="Enter email"
             />
@@ -56,8 +136,11 @@ const CreateAccount = () => {
             </label>
             <div className="password-input-wrapper">
               <input
+                name="password"
+                value={accountData.password}
+                onChange={handleInputChange}
                 type="password"
-                className="form-input"
+                className={`form-input ${errors.password ? "error" : ""}`}
                 id="password"
                 placeholder="Enter password"
               />
@@ -76,9 +159,14 @@ const CreateAccount = () => {
               Confirm Password
             </label>
             <div className="password-input-wrapper">
+              {/* <span className={matchError ? "match-error-message" : "hide"}>
+                Passwords must match
+              </span> */}
               <input
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
                 type="password"
-                className="form-input"
+                className={`form-input ${matchError ? "error" : ""}`}
                 id="confirm-password"
                 placeholder="Reenter password"
               />
