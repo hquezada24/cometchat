@@ -29,6 +29,6 @@ dist-ssr
 /server/dist/
 
 # Client-specific ignores (React)
-/client/build/
-/client/.env
-/client/node_modules
+client/build/
+client/.env
+client/node
