@@ -1,7 +1,8 @@
 import "./CreateAccount.css";
 import { useState } from "react";
 import Button from "../Button/Button";
-import { MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { MessageCircle, Eye, EyeOff } from "lucide-react";
 
 type AccountData = {
   fullName: string;
@@ -22,6 +23,7 @@ const CreateAccount = () => {
   const [errors, setErrors] = useState<AccountErrors>({});
   const [matchError, setMatchError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [hidePassword, setHidePassword] = useState(true);
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -158,18 +160,21 @@ const CreateAccount = () => {
                 name="password"
                 value={accountData.password}
                 onChange={handleInputChange}
-                type="password"
+                type={`${hidePassword ? "password" : "text"}`}
                 className={`form-input ${errors.password ? "error" : ""}`}
                 id="password"
                 placeholder="Enter password"
               />
-              <button type="button" className="password-toggle">
-                {/* {showPassword ? (
-                  <EyeOff className={styles.toggleIcon} />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setHidePassword((prev) => !prev)}
+              >
+                {hidePassword ? (
+                  <EyeOff className="toggle-icon" />
                 ) : (
-                  <Eye className={styles.toggleIcon} />
-                )} */}
-                See
+                  <Eye className="toggle-icon" />
+                )}
               </button>
             </div>
           </div>
@@ -178,24 +183,27 @@ const CreateAccount = () => {
               Confirm Password
             </label>
             <div className="password-input-wrapper">
-              {/* <span className={matchError ? "match-error-message" : "hide"}>
+              <span className={matchError ? "match-error-message" : "hide"}>
                 Passwords must match
-              </span> */}
+              </span>
               <input
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
-                type="password"
-                className={`form-input ${matchError ? "error" : ""}`}
+                type={`${hidePassword ? "password" : "text"}`}
+                className={`${matchError ? "error" : "form-input"}`}
                 id="confirm-password"
                 placeholder="Reenter password"
               />
-              <button type="button" className="password-toggle">
-                {/* {showPassword ? (
-                  <EyeOff className={styles.toggleIcon} />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setHidePassword((prev) => !prev)}
+              >
+                {hidePassword ? (
+                  <EyeOff className="toggle-icon" />
                 ) : (
-                  <Eye className={styles.toggleIcon} />
-                )} */}
-                See
+                  <Eye className="toggle-icon" />
+                )}
               </button>
             </div>
           </div>
@@ -221,7 +229,12 @@ const CreateAccount = () => {
 
         {/* Sign up link */}
         <p className="login-text">
-          Already a star? <button className="login-link">Login</button>
+          Already a user?{" "}
+          <button className="login-link">
+            <Link to={"/login"} className="login-link">
+              Login
+            </Link>
+          </button>
         </p>
       </div>
     </div>
