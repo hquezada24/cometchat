@@ -22,8 +22,8 @@ const CreateAccount = () => {
   const [errors, setErrors] = useState<AccountErrors>({});
   const [matchError, setMatchError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const API_BASE_URL =
-  //  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const validateData = () => {
     const errors: AccountErrors = {};
@@ -64,14 +64,33 @@ const CreateAccount = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateData()) {
       return;
     }
-    alert(accountData.fullName);
-    alert(accountData.username);
-    alert(accountData.email);
+    try {
+      const response = await fetch(`${API_BASE_URL}/create-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(accountData), // Send the actual formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      setAccountData({
+        fullName: "",
+        username: "",
+        email: "",
+        password: "",
+      });
+      setConfirmPassword("");
+    } catch (error) {
+      console.error("Quote submission error:", error);
+    }
   };
 
   return (

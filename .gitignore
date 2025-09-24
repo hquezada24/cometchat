@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.env
+
+# Server-specific ignores (Express.js)
+/server/dist/
+
+# Client-specific ignores (React)
+/client/build/
+/client/.env
+/client/node_modules
