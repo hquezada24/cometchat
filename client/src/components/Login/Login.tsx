@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import styles from "./Login.module.css";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [logWithEmail, setLogWithEmail] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,18 +37,33 @@ export default function Login() {
         {/* Login form */}
         <form onSubmit={handleSubmit} className={styles.loginForm}>
           <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.formLabel}>
-              Email
+            <label
+              htmlFor={logWithEmail ? "email" : "username"}
+              className={styles.formLabel}
+            >
+              {logWithEmail ? "Email" : "Username"}
             </label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id={logWithEmail ? "email" : "username"}
+              type={logWithEmail ? "email" : "text"}
+              value={logWithEmail ? email : username}
+              onChange={
+                logWithEmail
+                  ? (e) => setEmail(e.target.value)
+                  : (e) => setUsername(e.target.value)
+              }
               className={styles.formInput}
-              placeholder="Enter your email"
+              placeholder={`Enter your ${logWithEmail ? "email" : "username"}`}
               required
             />
+            <span className={styles.loginSpan}>
+              <button
+                className={styles.loginToggle}
+                onClick={() => setLogWithEmail((prev) => !prev)}
+              >
+                {`Log in with ${logWithEmail ? "username" : "email"}`}
+              </button>
+            </span>
           </div>
 
           <div className={styles.formGroup}>
@@ -112,7 +130,11 @@ export default function Login() {
         {/* Sign up link */}
         <p className={styles.signupText}>
           New to the cosmos?{" "}
-          <button className={styles.signupLink}>Create account</button>
+          <button className={styles.signupLink}>
+            <Link to={"/create-account"} className={styles.signupLink}>
+              Create account
+            </Link>
+          </button>
         </p>
       </div>
     </div>

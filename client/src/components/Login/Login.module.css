@@ -112,6 +112,24 @@
   box-shadow: 0 0 0 2px #22d3ee;
 }
 
+.loginSpan {
+  margin-top: 0.5rem;
+  display: flex;
+}
+
+.loginToggle {
+  background-color: transparent;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #67e8f9;
+}
+
+.loginToggle:hover {
+  color: #a5f3fc;
+  text-decoration: underline;
+}
+
 .passwordInputWrapper {
   position: relative;
 }
@@ -215,6 +233,7 @@
 }
 
 .signupLink {
+  text-decoration: none;
   color: #67e8f9;
   font-weight: 600;
   background: none;
@@ -225,6 +244,7 @@
 
 .signupLink:hover {
   color: #a5f3fc;
+  text-decoration: underline;
 }
 
 /* Responsive design */
