@@ -1,6 +1,7 @@
 const registerUser = require("../models/User");
+const jwt = require("jsonwebtoken");
 
-const createAccountRouter = async (req, res) => {
+const createAccountController = async (req, res) => {
   try {
     const user = await registerUser(req.body);
 
@@ -11,9 +12,23 @@ const createAccountRouter = async (req, res) => {
       });
     }
 
+    // Create JWT
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Set token as httpOnly cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
     res.json({
       status: "success",
-      message: "Account information has been registered successfully",
+      user: { id: user.id, username: user.username },
     });
   } catch (error) {
     res.status(500).json({
@@ -24,4 +39,4 @@ const createAccountRouter = async (req, res) => {
   }
 };
 
-module.exports = createAccountRouter;
+module.exports = createAccountController;
