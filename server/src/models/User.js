@@ -1,9 +1,9 @@
-const crypto = require("crypto");
-const { PrismaClient } = require("./generated/prisma");
+// const crypto = require("crypto");
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-export const registerUser = async (data) => {
+const registerUser = async (data) => {
   try {
     // Check for existing customer by email
     let customer = await prisma.user.findUnique({
@@ -12,12 +12,12 @@ export const registerUser = async (data) => {
 
     if (!customer) {
       // Create new customer
-      customer = await tx.customer.create({
+      customer = await prisma.user.create({
         data: {
           fullName: data.fullName,
-          companyName: data.companyName,
+          username: data.username,
           email: data.email,
-          phone: data.phone,
+          password: data.password,
         },
       });
     }
@@ -26,3 +26,5 @@ export const registerUser = async (data) => {
     throw new Error(`Failed to find or create customer: ${error.message}`);
   }
 };
+
+module.exports = registerUser;
