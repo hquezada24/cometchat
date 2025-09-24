@@ -1,4 +1,4 @@
-// const crypto = require("crypto");
+const { genPassword } = require("../utils/passwordUtils");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -10,6 +10,8 @@ const registerUser = async (data) => {
       where: { email: data.email },
     });
 
+    const password = await genPassword(data.password);
+
     if (!customer) {
       // Create new customer
       customer = await prisma.user.create({
@@ -17,7 +19,7 @@ const registerUser = async (data) => {
           fullName: data.fullName,
           username: data.username,
           email: data.email,
-          password: data.password,
+          password: password,
         },
       });
     }
