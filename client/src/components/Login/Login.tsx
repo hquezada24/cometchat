@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, MessageCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import styles from "./Login.module.css";
@@ -15,6 +16,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [logWithEmail, setLogWithEmail] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [errors, setErrors] = useState<AccountErrors>({});
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
@@ -51,16 +53,21 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(accountData), // Send the actual formData
       });
 
       if (!response.ok) {
+        console.log("could not log in");
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       setAccountData({
         login: "",
         password: "",
       });
+
+      console.log("logged in");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Quote submission error:", error);
     }
