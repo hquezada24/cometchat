@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const createAccountRoutes = require("./src/routes/createAccountRoutes");
+const loginRoutes = require("./src/routes/loginRoutes");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", createAccountRoutes);
+app.use("/", loginRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(
