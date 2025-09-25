@@ -4,17 +4,66 @@ import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import styles from "./Login.module.css";
 
+type AccountData = {
+  login: string; // email OR username
+  password: string;
+};
+
+type AccountErrors = Partial<Record<keyof AccountData, string>>;
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [logWithEmail, setLogWithEmail] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<AccountErrors>({});
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+  const [accountData, setAccountData] = useState<AccountData>({
+    login: "",
+    password: "",
+  });
+
+  const validateData = () => {
+    const errors: AccountErrors = {};
+    if (!accountData.login) {
+      errors.login = `${logWithEmail ? "Email" : "Username"} is required`;
+    }
+    if (!accountData.password.trim()) {
+      errors.password = "Password is required";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
+    if (!validateData()) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(accountData), // Send the actual formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      setAccountData({
+        login: "",
+        password: "",
+      });
+    } catch (error) {
+      console.error("Quote submission error:", error);
+    }
   };
 
   return (
@@ -46,13 +95,13 @@ export default function Login() {
             <input
               id={logWithEmail ? "email" : "username"}
               type={logWithEmail ? "email" : "text"}
-              value={logWithEmail ? email : username}
-              onChange={
-                logWithEmail
-                  ? (e) => setEmail(e.target.value)
-                  : (e) => setUsername(e.target.value)
+              value={accountData.login}
+              onChange={(e) =>
+                setAccountData({ ...accountData, login: e.target.value })
               }
-              className={styles.formInput}
+              className={`${styles.formInput} ${
+                errors.login ? styles.error : ""
+              }`}
               placeholder={`Enter your ${logWithEmail ? "email" : "username"}`}
               required
             />
@@ -74,9 +123,13 @@ export default function Login() {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`${styles.formInput} ${styles.passwordInput}`}
+                value={accountData.password}
+                onChange={(e) =>
+                  setAccountData({ ...accountData, password: e.target.value })
+                }
+                className={`${styles.formInput} ${styles.passwordInput}${
+                  errors.password ? styles.error : ""
+                }`}
                 placeholder="Enter your password"
                 required
               />

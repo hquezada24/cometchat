@@ -91,7 +91,7 @@ const CreateAccount = () => {
       });
       setConfirmPassword("");
     } catch (error) {
-      console.error("Quote submission error:", error);
+      console.error("Account information submission error:", error);
     }
   };
 
