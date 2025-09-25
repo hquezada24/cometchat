@@ -29,4 +29,18 @@ const registerUser = async (data) => {
   }
 };
 
-module.exports = registerUser;
+const verifyUser = async ({ login }) => {
+  try {
+    const isEmail = login.includes("@");
+
+    const user = await prisma.user.findUnique({
+      where: isEmail ? { email: login } : { username: login },
+    });
+
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to find customer: ${error.message}`);
+  }
+};
+
+module.exports = { registerUser, verifyUser };
