@@ -3,6 +3,7 @@ import { Eye, EyeOff, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
+import useAuth from "../../context/useAuth"; // Import the hook
 import styles from "./Login.module.css";
 
 type AccountData = {
@@ -18,8 +19,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState<AccountErrors>({});
-  const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const { login } = useAuth(); // Use the AuthContext login function
 
   const [accountData, setAccountData] = useState<AccountData>({
     login: "",
@@ -41,35 +41,32 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
 
     if (!validateData()) {
+      setIsLoading(false);
       return;
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(accountData), // Send the actual formData
-      });
+    setIsLoading(true);
 
-      if (!response.ok) {
-        console.log("could not log in");
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    try {
+      // Use the AuthContext login function instead of direct fetch
+      await login(accountData.login, accountData.password);
+
+      // Clear form data
       setAccountData({
         login: "",
         password: "",
       });
 
-      console.log("logged in");
+      console.log("logged in successfully");
+      // Navigate to home page
       navigate("/", { replace: true });
     } catch (error) {
-      console.error("Quote submission error:", error);
+      console.error("Login error:", error);
+      setErrors({ login: "Invalid credentials. Please try again." });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,8 +109,12 @@ export default function Login() {
               placeholder={`Enter your ${logWithEmail ? "email" : "username"}`}
               required
             />
+            {errors.login && (
+              <span className={styles.errorText}>{errors.login}</span>
+            )}
             <span className={styles.loginSpan}>
               <button
+                type="button" // Add type="button" to prevent form submission
                 className={styles.loginToggle}
                 onClick={() => setLogWithEmail((prev) => !prev)}
               >
@@ -134,7 +135,7 @@ export default function Login() {
                 onChange={(e) =>
                   setAccountData({ ...accountData, password: e.target.value })
                 }
-                className={`${styles.formInput} ${styles.passwordInput}${
+                className={`${styles.formInput} ${styles.passwordInput} ${
                   errors.password ? styles.error : ""
                 }`}
                 placeholder="Enter your password"
@@ -152,6 +153,9 @@ export default function Login() {
                 )}
               </button>
             </div>
+            {errors.password && (
+              <span className={styles.errorText}>{errors.password}</span>
+            )}
           </div>
 
           <div className={styles.formOptions}>
@@ -190,11 +194,9 @@ export default function Login() {
         {/* Sign up link */}
         <p className={styles.signupText}>
           New to the cosmos?{" "}
-          <button className={styles.signupLink}>
-            <Link to={"/create-account"} className={styles.signupLink}>
-              Create account
-            </Link>
-          </button>
+          <Link to="/create-account" className={styles.signupLink}>
+            Create account
+          </Link>
         </p>
       </div>
     </div>
