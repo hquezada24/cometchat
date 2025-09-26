@@ -15,7 +15,7 @@ type AccountErrors = Partial<Record<keyof AccountData, string>>;
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [logWithEmail, setLogWithEmail] = useState(true);
+  const [logWithEmail, setLogWithEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState<AccountErrors>({});
