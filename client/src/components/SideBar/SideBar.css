@@ -1,0 +1,377 @@
+.chat-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* Sidebar */
+.sidebar-container {
+  position: relative;
+  width: 320px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar,
+.search-contact {
+  width: 320px;
+  background-color: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.sidebar.original {
+  left: 0;
+}
+
+.search-contact {
+  padding: 16px;
+  left: 0;
+}
+
+/* Animation states */
+.slide-in {
+  transform: translateX(0);
+}
+
+.original.slide-out {
+  transform: translateX(100%);
+}
+
+.search-contact.slide-out {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-contact-header {
+  padding: 16px 0;
+  display: flex;
+  justify-content: start;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(to right, #22d3ee, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  background: linear-gradient(to right, #312e81, #581c87);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.new-conversation,
+.return-to-sidebar {
+  padding: 8px;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #64748b;
+}
+
+.header-button,
+.menuButton {
+  padding: 8px;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #64748b;
+}
+
+.header-button:hover,
+.new-conversation:hover,
+.return-to-sidebar:hover,
+.menuButton:hover {
+  background-color: #f1f5f9;
+}
+
+/* Search */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background-color: #f1f5f9;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.search-input:focus {
+  background-color: white;
+  border-color: #a5b4fc;
+}
+
+.search-icon,
+.search-contact-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+/* Chat List */
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 16px;
+}
+
+.chat-item {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.chat-item:hover {
+  background-color: #f8fafc;
+}
+
+.chat-item-active {
+  background: linear-gradient(to right, #f1f5f9, #ede9fe);
+  border-right: 2px solid #4338ca;
+}
+
+.chat-item-content {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 12px;
+}
+
+.avatar-container {
+  position: relative;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.avatar-regular {
+  background: linear-gradient(to right, #4338ca, #7c3aed);
+}
+
+.avatar-group {
+  background: linear-gradient(to right, #be185d, #e11d48);
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #22c55e;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.chat-info {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.chat-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.chat-name {
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  font-size: 14px;
+}
+
+.chat-name-active {
+  color: #312e81;
+}
+
+.chat-time {
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.chat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.last-message {
+  font-size: 13px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  flex: 1;
+}
+
+.unread-badge {
+  margin-left: 8px;
+  background: linear-gradient(to right, #be185d, #e11d48);
+  color: white;
+  font-size: 11px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Mobile Menu - Fixed styles */
+.mobileMenu {
+  display: block;
+  position: relative;
+  z-index: 1000;
+}
+
+/* Mobile Navigation Dropdown - Fixed positioning and background */
+.mobileNav {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  min-width: 200px;
+  border: 1px solid #e2e8f0;
+  z-index: 1000;
+}
+
+.mobileNavOpen {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobileNavList {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.mobileNavItem {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mobileNavItem:last-child {
+  border-bottom: none;
+}
+
+.mobileNavLink {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.mobileNavLink:hover {
+  background-color: #f8fafc;
+  color: #4338ca;
+}
+
+.mobileNavLink:focus {
+  outline: 2px solid #a5b4fc;
+  outline-offset: -2px;
+  background-color: #f1f5f9;
+}
+
+.activeMobileLink {
+  background-color: #ede9fe;
+  color: #4338ca;
+  font-weight: 600;
+}
+
+.activeMobileLink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #4338ca;
+}
