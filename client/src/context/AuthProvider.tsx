@@ -1,90 +1,25 @@
-// // src/context/AuthContext.tsx
-// import { createContext, useState, useEffect } from "react";
-// import type { ReactNode } from "react";
-
-// type AuthContextType = {
-//   isAuthenticated: boolean;
-//   login: (username: string, password: string) => Promise<void>;
-//   logout: () => Promise<void>;
-// };
-
-// const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// export const AuthProvider = ({ children }: { children: ReactNode }) => {
-//   const [isAuthenticated, setIsAuthenticated] = useState(false);
-//   const API_BASE_URL =
-//     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-
-//   useEffect(() => {
-//     const checkAuth = async () => {
-//       try {
-//         const res = await fetch(`${API_BASE_URL}/api/me`, {
-//           method: "GET",
-//           credentials: "include", // send cookies
-//         });
-//         if (res.ok) {
-//           setIsAuthenticated(true);
-//           console.log("authenticated");
-//         } else {
-//           setIsAuthenticated(false);
-//           console.log("unauthenticated");
-//         }
-//       } catch {
-//         setIsAuthenticated(false);
-//       }
-//     };
-//     checkAuth();
-//   }, [API_BASE_URL]);
-
-//   const login = async (username: string, password: string) => {
-//     // POST to backend, backend sets HttpOnly cookie
-//     const res = await fetch("/api/me", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       credentials: "include", // this is key!
-//       body: JSON.stringify({ username, password }),
-//     });
-
-//     if (!res.ok) throw new Error("Login failed");
-//     setIsAuthenticated(true);
-//   };
-
-//   const logout = async () => {
-//     await fetch("/api/logout", {
-//       method: "POST",
-//       credentials: "include", // send cookies so backend can clear them
-//     });
-//     setIsAuthenticated(false);
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export { AuthContext };
-
 // src/context/AuthContext.tsx
 import { createContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  isLoading: boolean; // Add this
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  checkAuth: () => Promise<void>; // Add this for manual auth checking
+  checkAuth: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const checkAuth = useCallback(async () => {
+    setIsLoading(true);
     try {
       // Changed from /api/me to /me to match your backend route
       const res = await fetch(`${API_BASE_URL}/api/me`, {
@@ -100,6 +35,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Auth check failed:", error);
       setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
     }
   }, [API_BASE_URL]);
 
@@ -137,7 +74,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, checkAuth }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, isLoading, login, logout, checkAuth }}
+    >
       {children}
     </AuthContext.Provider>
   );
