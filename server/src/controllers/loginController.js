@@ -37,7 +37,12 @@ const loginController = async (req, res) => {
     });
     res.json({
       status: "success",
-      user: { id: user.id, username: user.username },
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        username: user.username,
+        email: user.email,
+      },
     });
   } catch (error) {
     res.status(500).json({
