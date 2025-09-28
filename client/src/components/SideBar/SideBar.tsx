@@ -7,6 +7,7 @@ import {
   MessageCirclePlus,
   ArrowLeft,
 } from "lucide-react";
+import useAuth from "../../context/useAuth";
 import "./SideBar.css";
 
 const SideBar = () => {
@@ -15,6 +16,7 @@ const SideBar = () => {
   const [searchContact, setSearchContact] = useState(false);
   const menuRef = useRef(null);
   const location = useLocation();
+  const { logout } = useAuth();
 
   const chats = [
     {
@@ -53,8 +55,12 @@ const SideBar = () => {
 
   const navigationItems = [{ path: "/profile", label: "My Profile" }];
 
-  const isActiveLink = (path) => {
+  const isActiveLink = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -116,6 +122,13 @@ const SideBar = () => {
                           </Link>
                         </li>
                       ))}
+                      <li
+                        key={"logout"}
+                        className="mobileNavItem"
+                        onClick={handleLogout}
+                      >
+                        <p className={`mobileNavLink logout`}>Log out</p>
+                      </li>
                     </ul>
                   </nav>
                 </div>
