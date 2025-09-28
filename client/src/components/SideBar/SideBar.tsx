@@ -160,7 +160,7 @@ const SideBar = () => {
                         <div
                           className={`avatar ${
                             chat.isGroup ? "avatar-group" : "avatar-regular"
-                          }`}
+                          } ${searchContact ? "slide-out" : "slide-in"}`}
                         >
                           {chat.avatar}
                         </div>
