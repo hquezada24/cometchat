@@ -2,38 +2,49 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 
-type AuthContextType = {
+interface User {
+  id: string;
+  fullName: string;
+  username: string;
+  email: string;
+}
+
+interface AuthContextType {
   isAuthenticated: boolean;
-  isLoading: boolean; // Add this
+  user: User | null;
+  isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
-};
-
+}
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const checkAuth = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Changed from /api/me to /me to match your backend route
       const res = await fetch(`${API_BASE_URL}/api/me`, {
         method: "GET",
         credentials: "include", // send cookies
       });
       if (res.ok) {
+        const user = await res.json();
+        setUser(user);
         setIsAuthenticated(true);
       } else {
         console.error("Auth check failed not authenticated");
+        setUser(null);
         setIsAuthenticated(false);
       }
     } catch (error) {
       console.error("Auth check failed:", error);
+      setUser(null);
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
@@ -55,6 +66,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (!res.ok) throw new Error("Login failed");
 
+    // Get the response data (token and user info)
+    const data = await res.json();
+
+    // Store user information
+    if (data.user) {
+      setUser(data.user); // Add user state to your AuthProvider
+    }
+
     // Immediately update auth state after successful login
     setIsAuthenticated(true);
   };
@@ -69,13 +88,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Logout error:", error);
     } finally {
       // Always set to false regardless of logout request success
+      setUser(null);
       setIsAuthenticated(false);
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, isLoading, login, logout, checkAuth }}
+      value={{ isAuthenticated, user, isLoading, login, logout, checkAuth }}
     >
       {children}
     </AuthContext.Provider>
