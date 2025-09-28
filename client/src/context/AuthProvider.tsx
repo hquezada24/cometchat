@@ -1,13 +1,7 @@
 // src/context/AuthContext.tsx
 import { createContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
-
-interface User {
-  id: string;
-  fullName: string;
-  username: string;
-  email: string;
-}
+import type { User } from "../types/userTypes";
 
 interface AuthContextType {
   isAuthenticated: boolean;
