@@ -1,15 +1,10 @@
-// import React, { useState } from "react";
 import "./Profile.css";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import useAuth from "../../context/useAuth";
 
 const ChatProfile = () => {
-  const profileData = {
-    name: "Alberto",
-    username: "@alberto",
-    avatar: "al",
-    joinDate: "March 2023",
-  };
+  const { user } = useAuth();
 
   return (
     <div className="profile">
@@ -23,17 +18,17 @@ const ChatProfile = () => {
             </button>
           </div>
           <div className="avatar-container">
-            <div className="avatar">{profileData.avatar}</div>
+            <div className="avatar">{user ? user.fullName : ""}</div>
           </div>
-          <h1 className="profile-name">{profileData.name}</h1>
-          <p className="profile-username">{profileData.username}</p>
+          <h1 className="profile-name">{user ? user.fullName : ""}</h1>
+          <p className="profile-username">{user ? `@${user.username}` : ""}</p>
         </div>
 
         <div className="profile-body">
           <div className="info-grid">
             <div className="info-item">
-              <div className="info-value">{profileData.joinDate}</div>
-              <div className="info-label">Joined</div>
+              <div className="info-value">{user ? user.email : ""}</div>
+              <div className="info-label">Email</div>
             </div>
           </div>
         </div>
