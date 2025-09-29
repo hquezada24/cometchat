@@ -1,5 +1,5 @@
 // CometChat.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { MoreVertical, Phone, Video, Send } from "lucide-react";
 import SideBar from "../../components/SideBar/SideBar";
 import "./Home.css";

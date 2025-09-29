@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Search,
@@ -8,6 +8,9 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import useAuth from "../../context/useAuth";
+import { debounce } from "lodash";
+import type { DebouncedFunc } from "lodash";
+import { searchUsers } from "../../services/apiServices";
 import "./SideBar.css";
 
 const SideBar = () => {
@@ -17,6 +20,48 @@ const SideBar = () => {
   const menuRef = useRef(null);
   const location = useLocation();
   const { logout } = useAuth();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  type SearchFunction = (searchQuery: string) => Promise<void>;
+  interface User {
+    id: string; // or number, based on your actual data
+    username: string;
+    fullName: string;
+  }
+
+  const debouncedSearch: DebouncedFunc<SearchFunction> = useMemo(
+    () =>
+      debounce(async (searchQuery: string) => {
+        // Don't search if query is too short
+        if (searchQuery.trim().length < 2) {
+          setResults([]);
+          setIsLoading(false);
+          return;
+        }
+
+        setIsLoading(true);
+        try {
+          const data = await searchUsers(searchQuery);
+          setResults(data.data || []);
+        } catch (error) {
+          console.error("Search error:", error);
+          setResults([]);
+        } finally {
+          setIsLoading(false);
+        }
+      }, 400), // Slightly longer debounce for database queries
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearch(query);
+
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [query, debouncedSearch]);
 
   const chats = [
     {
@@ -160,7 +205,7 @@ const SideBar = () => {
                         <div
                           className={`avatar ${
                             chat.isGroup ? "avatar-group" : "avatar-regular"
-                          } ${searchContact ? "slide-out" : "slide-in"}`}
+                          } `}
                         >
                           {chat.avatar}
                         </div>
@@ -206,13 +251,46 @@ const SideBar = () => {
                 <ArrowLeft size={20} />
               </button>
             </div>
-            <div>
+            <div className="search-container">
               <Search size={16} className="search-contact-icon" />
               <input
                 type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search a name or a username"
                 className="search-input"
               />
+            </div>
+            <div className="search-results">
+              {isLoading
+                ? "Loading..."
+                : results.length > 0
+                ? results.map((user) => (
+                    <div className="search-item">
+                      <div className="search-item-content">
+                        <div className="search-info">
+                          <div className="avatar-container">
+                            <div className="avatar avatar-regular">
+                              {user.fullName}
+                            </div>
+                          </div>
+                          <div className="search-details">
+                            <div className="search-header">
+                              <h3 key={user.id} className="search-name">
+                                {user.fullName}
+                              </h3>
+                            </div>
+                            <div className="username">
+                              <p>{`@${user.username}`}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                : query.length > 0
+                ? "No users found."
+                : null}
             </div>
           </div>
         </div>
