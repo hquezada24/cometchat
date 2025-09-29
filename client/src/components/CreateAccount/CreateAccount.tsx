@@ -1,7 +1,7 @@
 import "./CreateAccount.css";
 import { useState } from "react";
 import Button from "../Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MessageCircle, Eye, EyeOff } from "lucide-react";
 
 type AccountData = {
@@ -24,6 +24,7 @@ const CreateAccount = () => {
   const [matchError, setMatchError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
+  const navigate = useNavigate();
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -90,6 +91,7 @@ const CreateAccount = () => {
         password: "",
       });
       setConfirmPassword("");
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Account information submission error:", error);
     }
