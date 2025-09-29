@@ -30,14 +30,14 @@ model Message {
   sender     User     @relation(fields: [senderId], references: [id])
   senderId   String
   chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
-  chatRoomId String   
+  chatRoomId String
   createdAt  DateTime @default(now())
 }
 
 model ChatRoom {
-  id        String     @id @default(cuid())
-  name      String
+  id        String    @id @default(cuid())
+  name      String?
   messages  Message[]
-  users     User[]     @relation("UserRooms")
-  createdAt DateTime   @default(now())
+  users     User[]    @relation("UserRooms")
+  createdAt DateTime  @default(now())
 }
