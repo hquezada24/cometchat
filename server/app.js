@@ -3,6 +3,7 @@ const app = express();
 const createAccountRoutes = require("./src/routes/createAccountRoutes");
 const loginRoutes = require("./src/routes/loginRoutes");
 const logoutRoutes = require("./src/routes/logoutRoutes");
+const userRoutes = require("./src/routes/userRoutes");
 const { authStatusController } = require("./src/controllers/authController");
 const cors = require("cors");
 require("dotenv").config();
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 app.use("/", createAccountRoutes);
 app.use("/", loginRoutes);
 app.use("/", logoutRoutes);
+app.use("/api/users", userRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(
