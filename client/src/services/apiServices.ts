@@ -18,14 +18,28 @@ const fetchChatRooms = async () => {
 };
 
 const searchUsers = async (query: string) => {
+  console.log("🔍 Searching for:", query);
+  console.log(
+    "🌐 API URL:",
+    `${API_BASE_URL}/api/users/search?q=${encodeURIComponent(query)}`
+  );
   const response = await fetch(
     `${API_BASE_URL}/api/users/search?q=${encodeURIComponent(query)}`,
     {
       credentials: "include",
     }
   );
-  if (!response.ok) throw new Error("Failed to search users");
-  return response.json();
+
+  console.log("📡 Response status:", response.status);
+  console.log("📡 Response OK:", response.ok);
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("❌ API Error Response:", errorText);
+    throw new Error("Failed to search users");
+  }
+  const data = await response.json();
+  console.log("✅ Search results:", data);
+  return data;
 };
 
 const sendMessage = async (chatId: string, message: string) => {
