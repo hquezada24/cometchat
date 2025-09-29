@@ -20,36 +20,12 @@ const getChatRoomsByUserId = async (userId) => {
           username: true,
         },
       },
-      messages: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 1, // Get only the last message for preview
-        include: {
-          sender: {
-            select: {
-              id: true,
-              fullName: true,
-              username: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: {
-      updatedAt: "desc", // Most recently active chats first
+      messages: true,
     },
   });
 
   // Transform data to match frontend expectations
-  return chatRooms.map((chat) => ({
-    id: chat.id,
-    users: chat.users,
-    messages: chat.messages,
-    otherUser: chat.users.find((p) => p.id !== userId),
-    lastMessage: chat.messages[0] || null,
-    createdAt: chat.createdAt,
-  }));
+  return chatRooms;
 };
 
 const createChatRoom = async (userId, otherUserId) => {
