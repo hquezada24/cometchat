@@ -1,10 +1,10 @@
-// chatRoomController.ts
+// chatRoomController.js
 const { getChatRoomsByUserId } = require("../models/chatRooms");
 
 const getChatRooms = async (req, res) => {
   try {
-    // Assuming you have user info from auth middleware
-    const userId = req.query.userId;
+    // Get userId from authenticated user (set by authenticate middleware)
+    const userId = req.user?.id;
 
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -12,7 +12,9 @@ const getChatRooms = async (req, res) => {
 
     const chatRooms = await getChatRoomsByUserId(userId);
 
-    if (!chatRooms) return res.send("prisma failed");
+    if (!chatRooms) {
+      return res.status(500).json({ error: "Failed to fetch chat rooms" });
+    }
 
     return res.status(200).json(chatRooms);
   } catch (error) {
