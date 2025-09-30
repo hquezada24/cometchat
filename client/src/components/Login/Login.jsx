@@ -11,16 +11,13 @@ export default function Login() {
   const [logWithEmail, setLogWithEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [errors, setErrors] = useState < AccountErrors > {};
+  const [errors, setErrors] = useState({});
   const { login } = useAuth(); // Use the AuthContext login function
 
-  const [accountData, setAccountData] =
-    useState <
-    AccountData >
-    {
-      login: "",
-      password: "",
-    };
+  const [accountData, setAccountData] = useState({
+    login: "",
+    password: "",
+  });
 
   const validateData = () => {
     const errors = {};
