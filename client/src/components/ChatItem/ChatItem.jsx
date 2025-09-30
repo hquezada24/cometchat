@@ -1,16 +1,14 @@
-// src/components/ChatItem/ChatItem.tsx
 import "./ChatItem.css";
 
 const ChatItem = ({ chat, currentUserId, onClick, selected = false }) => {
-  // Find the other user (not the current user)
-  const otherUser = chat.users.find((user) => user.id !== currentUserId);
+  const otherUser = chat.users.find(
+    (u) => String(u.id ?? u._id) !== String(currentUserId)
+  );
 
-  // Fallback values in case something goes wrong
   const displayName = otherUser?.fullName || "Unknown User";
   const displayUsername = otherUser?.username || "";
-  const avatarInitial = displayName.charAt(0).toUpperCase();
+  const avatarInitial = (displayName.charAt(0) || "?").toUpperCase();
 
-  // Get last message
   const lastMessage =
     chat.messages && chat.messages.length > 0
       ? chat.messages[chat.messages.length - 1]?.content ||
