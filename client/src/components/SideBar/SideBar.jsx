@@ -61,15 +61,15 @@ const SideBar = () => {
   // Fetch chat rooms on mount
   useEffect(() => {
     const loadChatRooms = async () => {
-      if (!user?.id) return;
+      const uid = user?.id || user?._id;
+      if (!uid) return;
 
       try {
         setLoading(true);
-        const chats = await fetchChatRooms(user.id);
-        setActiveChats(chats);
-
-        // Select first chat by default if available and no chat is selected
-        if (chats.length > 0 && !selectedChat) {
+        const chats = await fetchChatRooms(uid);
+        console.log("Fetched chat rooms:", chats);
+        setActiveChats(Array.isArray(chats) ? chats : []);
+        if (Array.isArray(chats) && chats.length > 0 && !selectedChat) {
           setSelectedChat(chats[0]);
         }
       } catch (err) {
@@ -81,13 +81,18 @@ const SideBar = () => {
     };
 
     loadChatRooms();
-  }, [user?.id]);
+  }, [user?.id, user?._id]);
 
   // Handle contact click from search results
   const handleContactClick = (contact) => {
-    // Check if chat already exists
     const existingChat = activeChats.find((chat) =>
-      chat.users.some((u) => u.id === contact.id)
+      chat.users.some((u) => {
+        const uid = String(u.id ?? u._id ?? u.userId ?? "");
+        const contactId = String(
+          contact.id ?? contact._id ?? contact.userId ?? ""
+        );
+        return uid && contactId && uid === contactId;
+      })
     );
 
     if (existingChat) {
@@ -96,9 +101,8 @@ const SideBar = () => {
       setSearchContact(false);
       setQuery("");
     } else {
-      // Create temporary chat
       const tempChat = {
-        id: `temp-${contact.id}`,
+        id: `temp-${contact.id ?? contact._id}`,
         users: [user, contact],
         messages: [],
         isTemporary: true,
