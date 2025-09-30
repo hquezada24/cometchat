@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
 
-// Extend Express Request to include user property
-
 const authenticate = async (req, res, next) => {
   try {
     // Option 1: Get token from cookie
@@ -15,7 +13,6 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    console.log("cookies: ", token);
     // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = {
