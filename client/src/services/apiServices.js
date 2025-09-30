@@ -1,3 +1,4 @@
+// apiServices.js
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -9,16 +10,12 @@ const fetchCurrentUser = async () => {
   return response.json();
 };
 
-const fetchChatRooms = async (userId) => {
-  const response = await fetch(
-    `${API_BASE_URL}/api/chatrooms${
-      userId ? `?userId=${encodeURIComponent(userId)}` : ""
-    }`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  );
+const fetchChatRooms = async () => {
+  // Remove userId param - backend will use authenticated user
+  const response = await fetch(`${API_BASE_URL}/api/chatrooms`, {
+    method: "GET",
+    credentials: "include",
+  });
 
   if (!response.ok) {
     const errTxt = await response.text().catch(() => "");
