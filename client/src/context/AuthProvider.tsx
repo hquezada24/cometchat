@@ -1,7 +1,8 @@
-// src/context/AuthContext.tsx
+// src/context/AuthProvider.tsx
 import { createContext, useState, useEffect, useCallback } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, Dispatch, SetStateAction } from "react";
 import type { User } from "../types/userTypes";
+import type { Chat } from "../types/chatTypes";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,13 +11,18 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  selectedChat: Chat | null;
+  setSelectedChat: Dispatch<SetStateAction<Chat | null>>;
+  refreshUser: () => Promise<void>;
 }
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -25,14 +31,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/me`, {
         method: "GET",
-        credentials: "include", // send cookies
+        credentials: "include",
       });
       if (res.ok) {
-        const user = await res.json();
-        setUser(user);
+        const userData = await res.json();
+        setUser(userData);
         setIsAuthenticated(true);
       } else {
-        console.error("Auth check failed not authenticated");
         setUser(null);
         setIsAuthenticated(false);
       }
@@ -45,30 +50,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [API_BASE_URL]);
 
+  // New function to refresh user data
+  const refreshUser = useCallback(async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/me`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (res.ok) {
+        const userData = await res.json();
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error("Failed to refresh user:", error);
+    }
+  }, [API_BASE_URL, isAuthenticated]);
+
   useEffect(() => {
     checkAuth();
-  }, [API_BASE_URL, checkAuth]);
+  }, [checkAuth]);
 
   const login = async (login: string, password: string) => {
-    // Changed to use consistent API_BASE_URL and /login endpoint
     const res = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // this is key!
-      body: JSON.stringify({ login: login, password }), // Changed to match backend expectation
+      credentials: "include",
+      body: JSON.stringify({ login, password }),
     });
 
     if (!res.ok) throw new Error("Login failed");
 
-    // Get the response data (token and user info)
     const data = await res.json();
 
-    // Store user information
     if (data.user) {
-      setUser(data.user); // Add user state to your AuthProvider
+      setUser(data.user);
     }
 
-    // Immediately update auth state after successful login
     setIsAuthenticated(true);
   };
 
@@ -76,20 +95,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await fetch(`${API_BASE_URL}/logout`, {
         method: "POST",
-        credentials: "include", // send cookies so backend can clear them
+        credentials: "include",
       });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Always set to false regardless of logout request success
       setUser(null);
       setIsAuthenticated(false);
+      setSelectedChat(null);
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, isLoading, login, logout, checkAuth }}
+      value={{
+        isAuthenticated,
+        user,
+        isLoading,
+        login,
+        logout,
+        checkAuth,
+        selectedChat,
+        setSelectedChat,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>
