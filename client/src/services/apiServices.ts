@@ -9,11 +9,19 @@ const fetchCurrentUser = async () => {
   return response.json();
 };
 
-const fetchChatRooms = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/chatrooms`, {
-    credentials: "include",
-  });
-  if (!response.ok) throw new Error("Failed to fetch chat rooms");
+const fetchChatRooms = async (userId: string) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/chatrooms?userId=${userId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch chat rooms");
+  }
+
   return response.json();
 };
 
@@ -42,13 +50,25 @@ const searchUsers = async (query: string) => {
   return data;
 };
 
-const sendMessage = async (chatId: string, message: string) => {
-  const response = await fetch(`${API_BASE_URL}/api/chats/${chatId}/messages`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ message }),
-  });
+const sendMessage = async (
+  chatId: string,
+  message: string,
+  otherUserId: string
+) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        participantId: otherUserId,
+        message: message,
+      }),
+    }
+  );
   if (!response.ok) throw new Error("Failed to send message");
   return response.json();
 };
