@@ -1,13 +1,12 @@
-// src/context/AuthProvider.tsx
 import { createContext, useState, useEffect, useCallback } from "react";
 
-const AuthContext = (createContext < AuthContextType) | (undefined > undefined);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = (useState < User) | (null > null);
-  const [selectedChat, setSelectedChat] = (useState < Chat) | (null > null);
+  const [user, setUser] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(null);
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -20,7 +19,10 @@ export const AuthProvider = ({ children }) => {
       });
       if (res.ok) {
         const userData = await res.json();
-        setUser(userData);
+        console.log("auth userData:", userData);
+        // Normalize if nested
+        const u = userData.user ?? userData;
+        setUser(u);
         setIsAuthenticated(true);
       } else {
         setUser(null);
@@ -35,7 +37,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [API_BASE_URL]);
 
-  // New function to refresh user data
   const refreshUser = useCallback(async () => {
     if (!isAuthenticated) return;
 
@@ -46,7 +47,8 @@ export const AuthProvider = ({ children }) => {
       });
       if (res.ok) {
         const userData = await res.json();
-        setUser(userData);
+        const u = userData.user ?? userData;
+        setUser(u);
       }
     } catch (error) {
       console.error("Failed to refresh user:", error);
@@ -57,12 +59,12 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, [checkAuth]);
 
-  const login = async (login, password) => {
+  const login = async (loginParam, password) => {
     const res = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ login, password }),
+      body: JSON.stringify({ login: loginParam, password }),
     });
 
     if (!res.ok) throw new Error("Login failed");
@@ -109,5 +111,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export { AuthContext };
