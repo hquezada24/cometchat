@@ -1,3 +1,4 @@
+// src/components/SideBar/SideBar.tsx
 import { useState, useRef, useMemo, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -7,34 +8,39 @@ import {
   MessageCirclePlus,
   ArrowLeft,
 } from "lucide-react";
-import useAuth from "../../context/useAuth";
 import { debounce } from "lodash";
 import type { DebouncedFunc } from "lodash";
-import { searchUsers } from "../../services/apiServices";
+import { searchUsers, fetchChatRooms } from "../../services/apiServices";
 import "./SideBar.css";
+import useAuth from "../../context/useAuth";
+import ChatItem from "../ChatItem/ChatItem";
+import type { Chat } from "../../types/chatTypes";
+// import { createTemporaryChat } from "../../types/chatTypes";
+
+interface User {
+  id: string;
+  username: string;
+  fullName: string;
+}
+
+type SearchFunction = (searchQuery: string) => Promise<void>;
 
 const SideBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(0);
   const [searchContact, setSearchContact] = useState(false);
   const menuRef = useRef(null);
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logout, user, selectedChat, setSelectedChat } = useAuth();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  type SearchFunction = (searchQuery: string) => Promise<void>;
-  interface User {
-    id: string; // or number, based on your actual data
-    username: string;
-    fullName: string;
-  }
+  const [activeChats, setActiveChats] = useState<Chat[]>([]);
+  const [temporaryChat, setTemporaryChat] = useState<Chat | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const debouncedSearch: DebouncedFunc<SearchFunction> = useMemo(
     () =>
       debounce(async (searchQuery: string) => {
-        // Don't search if query is too short
         if (searchQuery.trim().length < 2) {
           setResults([]);
           setIsLoading(false);
@@ -51,48 +57,75 @@ const SideBar = () => {
         } finally {
           setIsLoading(false);
         }
-      }, 400), // Slightly longer debounce for database queries
+      }, 400),
     []
   );
 
   useEffect(() => {
     debouncedSearch(query);
-
     return () => {
       debouncedSearch.cancel();
     };
   }, [query, debouncedSearch]);
 
-  const chats = [
-    {
-      id: 1,
-      name: "Sarah Chen",
-      lastMessage: "Hey! How's the project going?",
-      time: "2m",
-      unread: 3,
-      avatar: "SC",
-      online: true,
-    },
-    {
-      id: 2,
-      name: "Dev Team",
-      lastMessage: "Alex: New deployment is ready",
-      time: "15m",
-      unread: 0,
-      avatar: "DT",
-      online: false,
-      isGroup: true,
-    },
-    {
-      id: 3,
-      name: "Maya Rodriguez",
-      lastMessage: "Thanks for the help earlier!",
-      time: "1h",
-      unread: 1,
-      avatar: "MR",
-      online: true,
-    },
-  ];
+  // Fetch chat rooms on mount
+  useEffect(() => {
+    const loadChatRooms = async () => {
+      if (!user?.id) return;
+
+      try {
+        setIsLoading(true);
+        const chats = await fetchChatRooms(user.id);
+        setActiveChats(chats);
+
+        // Select first chat by default if available and no chat is selected
+        if (chats.length > 0 && !selectedChat) {
+          setSelectedChat(chats[0]);
+        }
+      } catch (err: any) {
+        console.error("Error fetching chat rooms:", err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadChatRooms();
+  }, [user?.id]);
+
+  // Handle contact click from search results
+  const handleContactClick = (contact: User) => {
+    // Check if chat already exists
+    const existingChat = activeChats.find((chat) =>
+      chat.users.some((u) => u.id === contact.id)
+    );
+
+    if (existingChat) {
+      setSelectedChat(existingChat);
+      setTemporaryChat(null);
+      setSearchContact(false);
+      setQuery("");
+    } else {
+      // Create temporary chat
+      const tempChat: Chat = {
+        id: `temp-${contact.id}`,
+        users: [user!, contact],
+        messages: [],
+        isTemporary: true,
+        otherUser: contact,
+      };
+
+      setTemporaryChat(tempChat);
+      setSelectedChat(tempChat);
+      setSearchContact(false);
+      setQuery("");
+    }
+  };
+
+  // Combine active chats with temporary chat
+  const displayedChats = temporaryChat
+    ? [temporaryChat, ...activeChats]
+    : activeChats;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -108,191 +141,171 @@ const SideBar = () => {
     await logout();
   };
 
-  return (
-    <div className="chat-container">
-      <div className="sidebar-container">
-        <div
-          className={`sidebar original ${
-            searchContact ? "slide-out" : "slide-in"
-          }`}
-        >
-          {/* Header */}
-          <div className="sidebar-header">
-            <div className="header-top">
-              {/* Logo on the left */}
-              <div className="brand-container">
-                <div className="logo">
-                  <MessageCircle size={16} color="white" />
-                </div>
-                <h1 className="title">Comet Chat</h1>
-              </div>
+  const selectChat = (chatRoom: Chat) => {
+    setSelectedChat(chatRoom);
+  };
 
-              {/* Buttons on the right */}
-              <div className="header-options">
+  if (error && activeChats.length === 0) {
+    return <div className="sidebar">Error: {error}</div>;
+  }
+
+  return (
+    <div className="sidebar-container">
+      <div
+        className={`sidebar original ${
+          searchContact ? "slide-out" : "slide-in"
+        }`}
+      >
+        {/* Header */}
+        <div className="sidebar-header">
+          <div className="header-top">
+            <div className="brand-container">
+              <div className="logo">
+                <MessageCircle size={16} color="white" />
+              </div>
+              <h1 className="title">Comet Chat</h1>
+            </div>
+
+            <div className="header-options">
+              <button
+                className="new-conversation"
+                onClick={() => setSearchContact(true)}
+              >
+                <MessageCirclePlus size={20} />
+              </button>
+
+              <div className="mobileMenu" ref={menuRef}>
                 <button
-                  className="new-conversation"
-                  onClick={() => setSearchContact(true)}
+                  className="menuButton"
+                  onClick={toggleMenu}
+                  aria-expanded={isMenuOpen}
+                  aria-controls="mobile-navigation"
+                  aria-label="Toggle navigation menu"
                 >
-                  <MessageCirclePlus size={20} />
+                  <Menu size={20} />
                 </button>
 
-                {/* Mobile Menu Button */}
-                <div className="mobileMenu" ref={menuRef}>
-                  <button
-                    className="menuButton"
-                    onClick={toggleMenu}
-                    aria-expanded={isMenuOpen}
-                    aria-controls="mobile-navigation"
-                    aria-label="Toggle navigation menu"
-                  >
-                    <Menu size={20} />
-                  </button>
-
-                  {/* Mobile Navigation Dropdown */}
-                  <nav
-                    className={`mobileNav ${isMenuOpen ? "mobileNavOpen" : ""}`}
-                    id="mobile-navigation"
-                    aria-label="Mobile navigation"
-                  >
-                    <ul className="mobileNavList">
-                      {navigationItems.map((item) => (
-                        <li key={item.path} className="mobileNavItem">
-                          <Link
-                            to={item.path}
-                            className={`mobileNavLink ${
-                              isActiveLink(item.path) ? "activeMobileLink" : ""
-                            }`}
-                          >
-                            {item.label}
-                          </Link>
-                        </li>
-                      ))}
-                      <li
-                        key={"logout"}
-                        className="mobileNavItem"
-                        onClick={handleLogout}
-                      >
-                        <p className={`mobileNavLink logout`}>Log out</p>
+                <nav
+                  className={`mobileNav ${isMenuOpen ? "mobileNavOpen" : ""}`}
+                  id="mobile-navigation"
+                  aria-label="Mobile navigation"
+                >
+                  <ul className="mobileNavList">
+                    {navigationItems.map((item) => (
+                      <li key={item.path} className="mobileNavItem">
+                        <Link
+                          to={item.path}
+                          className={`mobileNavLink ${
+                            isActiveLink(item.path) ? "activeMobileLink" : ""
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
                       </li>
-                    </ul>
-                  </nav>
-                </div>
+                    ))}
+                    <li
+                      key={"logout"}
+                      className="mobileNavItem"
+                      onClick={handleLogout}
+                    >
+                      <p className={`mobileNavLink logout`}>Log out</p>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
+          </div>
 
-            {/* Search under the buttons */}
-            <div className="search-container">
-              <Search size={16} className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search conversations..."
-                className="search-input"
+          {/* Search conversations */}
+          <div className="search-container">
+            <Search size={16} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search conversations..."
+              className="search-input"
+            />
+          </div>
+        </div>
+
+        {/* Chat List */}
+        <div className="chat-list">
+          {isLoading && activeChats.length === 0 ? (
+            <div className="loading-state">Loading chats...</div>
+          ) : displayedChats.length === 0 ? (
+            <div className="empty-state">No conversations yet</div>
+          ) : (
+            displayedChats.map((chat) => (
+              <ChatItem
+                chat={chat}
+                key={chat.id}
+                currentUserId={user?.id || ""}
+                selected={selectedChat?.id === chat.id}
+                onClick={() => selectChat(chat)}
               />
-            </div>
+            ))
+          )}
+        </div>
+      </div>
 
-            <div className="chat-list">
-              {chats.map((chat, index) => (
-                <div
-                  key={chat.id}
-                  onClick={() => setSelectedChat(index)}
-                  className={`chat-item ${
-                    selectedChat === index ? "chat-item-active" : ""
-                  }`}
-                >
-                  <div className="chat-item-content">
-                    <div className="chat-info">
-                      <div className="avatar-container">
-                        <div
-                          className={`avatar ${
-                            chat.isGroup ? "avatar-group" : "avatar-regular"
-                          } `}
-                        >
-                          {chat.avatar}
-                        </div>
-                        {chat.online && (
-                          <div className="online-indicator"></div>
-                        )}
+      {/* Search Contact Panel */}
+      <div
+        className={`search-contact ${searchContact ? "slide-in" : "slide-out"}`}
+      >
+        <div className="search-contact-header">
+          <button
+            className="return-to-sidebar"
+            onClick={() => {
+              setSearchContact(false);
+              setQuery("");
+              setResults([]);
+            }}
+          >
+            <ArrowLeft size={20} />
+          </button>
+        </div>
+        <div className="search-container">
+          <Search size={16} className="search-contact-icon" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search a name or a username"
+            className="search-input"
+          />
+        </div>
+        <div className="search-results">
+          {isLoading ? (
+            <div className="loading-state">Loading...</div>
+          ) : results.length > 0 ? (
+            results.map((searchUser) => (
+              <div
+                key={searchUser.id}
+                className="search-item"
+                onClick={() => handleContactClick(searchUser)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="search-item-content">
+                  <div className="search-info">
+                    <div className="avatar-container">
+                      <div className="avatar avatar-regular">
+                        {searchUser.fullName.charAt(0).toUpperCase()}
                       </div>
-                      <div className="chat-details">
-                        <div className="chat-header">
-                          <h3
-                            className={`chat-name ${
-                              selectedChat === index ? "chat-name-active" : ""
-                            }`}
-                          >
-                            {chat.name}
-                          </h3>
-                          <span className="chat-time">{chat.time}</span>
-                        </div>
-                        <div className="chat-footer">
-                          <p className="last-message">{chat.lastMessage}</p>
-                          {chat.unread > 0 && (
-                            <span className="unread-badge">{chat.unread}</span>
-                          )}
-                        </div>
+                    </div>
+                    <div className="search-details">
+                      <div className="search-header">
+                        <h3 className="search-name">{searchUser.fullName}</h3>
+                      </div>
+                      <div className="username">
+                        <p>{`@${searchUser.username}`}</p>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div
-            className={`search-contact ${
-              searchContact ? "slide-in" : "slide-out"
-            }`}
-          >
-            <div className="search-contact-header">
-              <button
-                className="return-to-sidebar"
-                onClick={() => setSearchContact(false)}
-              >
-                <ArrowLeft size={20} />
-              </button>
-            </div>
-            <div className="search-container">
-              <Search size={16} className="search-contact-icon" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search a name or a username"
-                className="search-input"
-              />
-            </div>
-            <div className="search-results">
-              {isLoading
-                ? "Loading..."
-                : results.length > 0
-                ? results.map((user) => (
-                    <div className="search-item">
-                      <div className="search-item-content">
-                        <div className="search-info">
-                          <div className="avatar-container">
-                            <div className="avatar avatar-regular">
-                              {user.fullName}
-                            </div>
-                          </div>
-                          <div className="search-details">
-                            <div className="search-header">
-                              <h3 key={user.id} className="search-name">
-                                {user.fullName}
-                              </h3>
-                            </div>
-                            <div className="username">
-                              <p>{`@${user.username}`}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                : query.length > 0
-                ? "No users found."
-                : null}
-            </div>
-          </div>
+              </div>
+            ))
+          ) : query.length > 0 ? (
+            <div className="empty-state">No users found.</div>
+          ) : null}
         </div>
       </div>
     </div>
