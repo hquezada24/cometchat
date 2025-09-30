@@ -4,7 +4,7 @@ const { getChatRoomsByUserId } = require("../models/chatRooms");
 const getChatRooms = async (req, res) => {
   try {
     // Assuming you have user info from auth middleware
-    const userId = req.body.id;
+    const userId = req.query.userId;
 
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
