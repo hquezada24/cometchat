@@ -9,45 +9,35 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { debounce } from "lodash";
-import type { DebouncedFunc } from "lodash";
 import { searchUsers, fetchChatRooms } from "../../services/apiServices";
 import "./SideBar.css";
 import useAuth from "../../context/useAuth";
 import ChatItem from "../ChatItem/ChatItem";
-import type { Chat } from "../../types/chatTypes";
 // import { createTemporaryChat } from "../../types/chatTypes";
-
-interface User {
-  id: string;
-  username: string;
-  fullName: string;
-}
-
-type SearchFunction = (searchQuery: string) => Promise<void>;
 
 const SideBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchContact, setSearchContact] = useState(false);
   const menuRef = useRef(null);
   const location = useLocation();
-  const { logout, user, selectedChat, setSelectedChat } = useAuth();
+  const { logout, user, selectedChat, setSelectedChat, isLoading } = useAuth();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeChats, setActiveChats] = useState<Chat[]>([]);
-  const [temporaryChat, setTemporaryChat] = useState<Chat | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [activeChats, setActiveChats] = useState([]);
+  const [temporaryChat, setTemporaryChat] = useState(null);
+  const [error, setError] = useState(null);
 
-  const debouncedSearch: DebouncedFunc<SearchFunction> = useMemo(
+  const debouncedSearch = useMemo(
     () =>
-      debounce(async (searchQuery: string) => {
+      debounce(async (searchQuery) => {
         if (searchQuery.trim().length < 2) {
           setResults([]);
-          setIsLoading(false);
+          setLoading(false);
           return;
         }
 
-        setIsLoading(true);
+        setLoading(true);
         try {
           const data = await searchUsers(searchQuery);
           setResults(data.data || []);
@@ -55,7 +45,7 @@ const SideBar = () => {
           console.error("Search error:", error);
           setResults([]);
         } finally {
-          setIsLoading(false);
+          setLoading(false);
         }
       }, 400),
     []
@@ -74,7 +64,7 @@ const SideBar = () => {
       if (!user?.id) return;
 
       try {
-        setIsLoading(true);
+        setLoading(true);
         const chats = await fetchChatRooms(user.id);
         setActiveChats(chats);
 
@@ -82,11 +72,11 @@ const SideBar = () => {
         if (chats.length > 0 && !selectedChat) {
           setSelectedChat(chats[0]);
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error fetching chat rooms:", err);
         setError(err.message);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
@@ -94,7 +84,7 @@ const SideBar = () => {
   }, [user?.id]);
 
   // Handle contact click from search results
-  const handleContactClick = (contact: User) => {
+  const handleContactClick = (contact) => {
     // Check if chat already exists
     const existingChat = activeChats.find((chat) =>
       chat.users.some((u) => u.id === contact.id)
@@ -107,9 +97,9 @@ const SideBar = () => {
       setQuery("");
     } else {
       // Create temporary chat
-      const tempChat: Chat = {
+      const tempChat = {
         id: `temp-${contact.id}`,
-        users: [user!, contact],
+        users: [user, contact],
         messages: [],
         isTemporary: true,
         otherUser: contact,
@@ -133,7 +123,7 @@ const SideBar = () => {
 
   const navigationItems = [{ path: "/profile", label: "My Profile" }];
 
-  const isActiveLink = (path: string) => {
+  const isActiveLink = (path) => {
     return location.pathname === path;
   };
 
@@ -141,13 +131,15 @@ const SideBar = () => {
     await logout();
   };
 
-  const selectChat = (chatRoom: Chat) => {
+  const selectChat = (chatRoom) => {
     setSelectedChat(chatRoom);
   };
 
   if (error && activeChats.length === 0) {
     return <div className="sidebar">Error: {error}</div>;
   }
+
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <div className="sidebar-container">
@@ -229,7 +221,7 @@ const SideBar = () => {
 
         {/* Chat List */}
         <div className="chat-list">
-          {isLoading && activeChats.length === 0 ? (
+          {loading && activeChats.length === 0 ? (
             <div className="loading-state">Loading chats...</div>
           ) : displayedChats.length === 0 ? (
             <div className="empty-state">No conversations yet</div>
@@ -274,7 +266,7 @@ const SideBar = () => {
           />
         </div>
         <div className="search-results">
-          {isLoading ? (
+          {loading ? (
             <div className="loading-state">Loading...</div>
           ) : results.length > 0 ? (
             results.map((searchUser) => (

@@ -9,7 +9,7 @@ const fetchCurrentUser = async () => {
   return response.json();
 };
 
-const fetchChatRooms = async (userId: string) => {
+const fetchChatRooms = async (userId) => {
   const response = await fetch(
     `${API_BASE_URL}/api/chatrooms?userId=${userId}`,
     {
@@ -25,7 +25,7 @@ const fetchChatRooms = async (userId: string) => {
   return response.json();
 };
 
-const searchUsers = async (query: string) => {
+const searchUsers = async (query) => {
   console.log("🔍 Searching for:", query);
   console.log(
     "🌐 API URL:",
@@ -50,11 +50,10 @@ const searchUsers = async (query: string) => {
   return data;
 };
 
-const sendMessage = async (
-  chatId: string,
-  message: string,
-  otherUserId: string
-) => {
+const sendMessage = async (chatId, message) => {
+  console.log(
+    `Now sending post to ${API_BASE_URL}/api/chatrooms/${chatId}/messages}`
+  );
   const response = await fetch(
     `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
     {
@@ -64,7 +63,6 @@ const sendMessage = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        participantId: otherUserId,
         message: message,
       }),
     }

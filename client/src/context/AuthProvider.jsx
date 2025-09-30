@@ -1,28 +1,13 @@
 // src/context/AuthProvider.tsx
 import { createContext, useState, useEffect, useCallback } from "react";
-import type { ReactNode, Dispatch, SetStateAction } from "react";
-import type { User } from "../types/userTypes";
-import type { Chat } from "../types/chatTypes";
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  user: User | null;
-  isLoading: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
-  selectedChat: Chat | null;
-  setSelectedChat: Dispatch<SetStateAction<Chat | null>>;
-  refreshUser: () => Promise<void>;
-}
+const AuthContext = (createContext < AuthContextType) | (undefined > undefined);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [user, setUser] = (useState < User) | (null > null);
+  const [selectedChat, setSelectedChat] = (useState < Chat) | (null > null);
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -72,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuth();
   }, [checkAuth]);
 
-  const login = async (login: string, password: string) => {
+  const login = async (login, password) => {
     const res = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

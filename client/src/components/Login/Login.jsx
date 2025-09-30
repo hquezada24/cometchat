@@ -6,28 +6,24 @@ import Button from "../Button/Button";
 import useAuth from "../../context/useAuth"; // Import the hook
 import styles from "./Login.module.css";
 
-type AccountData = {
-  login: string; // email OR username
-  password: string;
-};
-
-type AccountErrors = Partial<Record<keyof AccountData, string>>;
-
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [logWithEmail, setLogWithEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [errors, setErrors] = useState<AccountErrors>({});
+  const [errors, setErrors] = useState < AccountErrors > {};
   const { login } = useAuth(); // Use the AuthContext login function
 
-  const [accountData, setAccountData] = useState<AccountData>({
-    login: "",
-    password: "",
-  });
+  const [accountData, setAccountData] =
+    useState <
+    AccountData >
+    {
+      login: "",
+      password: "",
+    };
 
   const validateData = () => {
-    const errors: AccountErrors = {};
+    const errors = {};
     if (!accountData.login) {
       errors.login = `${logWithEmail ? "Email" : "Username"} is required`;
     }
@@ -39,7 +35,7 @@ export default function Login() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateData()) {

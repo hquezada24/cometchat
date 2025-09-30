@@ -45,6 +45,7 @@ const Home = () => {
 
     try {
       // Handle temporary chat - create chat room first
+      console.log("Selected chat: ", selectedChat);
       if (selectedChat.isTemporary) {
         const response = await fetch(`${API_BASE_URL}/api/chatrooms`, {
           method: "POST",
@@ -53,7 +54,6 @@ const Home = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            participantId: otherUser.id,
             message: messageContent,
           }),
         });

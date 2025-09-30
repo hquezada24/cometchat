@@ -4,23 +4,14 @@ import Button from "../Button/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { MessageCircle, Eye, EyeOff } from "lucide-react";
 
-type AccountData = {
-  fullName: string;
-  username: string;
-  email: string;
-  password: string;
-};
-
-type AccountErrors = Partial<Record<keyof AccountData, string>>;
-
 const CreateAccount = () => {
-  const [accountData, setAccountData] = useState<AccountData>({
+  const [accountData, setAccountData] = useState({
     fullName: "",
     username: "",
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState<AccountErrors>({});
+  const [errors, setErrors] = useState({});
   const [matchError, setMatchError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
@@ -29,7 +20,7 @@ const CreateAccount = () => {
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const validateData = () => {
-    const errors: AccountErrors = {};
+    const errors = {};
     if (!accountData.fullName.trim()) {
       errors.fullName = "Full name is required";
     }
@@ -47,14 +38,12 @@ const CreateAccount = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setAccountData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleConfirmPasswordChange = (e) => {
     // e.target is correctly typed as HTMLInputElement
     const { value } = e.target;
 
@@ -67,7 +56,7 @@ const CreateAccount = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateData()) {
       return;
