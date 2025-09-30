@@ -1,0 +1,61 @@
+// src/components/ChatItem/ChatItem.tsx
+import "./ChatItem.css";
+
+const ChatItem = ({ chat, currentUserId, onClick, selected = false }) => {
+  // Find the other user (not the current user)
+  const otherUser = chat.users.find((user) => user.id !== currentUserId);
+
+  // Fallback values in case something goes wrong
+  const displayName = otherUser?.fullName || "Unknown User";
+  const displayUsername = otherUser?.username || "";
+  const avatarInitial = displayName.charAt(0).toUpperCase();
+
+  // Get last message
+  const lastMessage =
+    chat.messages && chat.messages.length > 0
+      ? chat.messages[chat.messages.length - 1]?.content ||
+        chat.messages[chat.messages.length - 1]?.text ||
+        ""
+      : chat.isTemporary
+      ? "Start a conversation..."
+      : "No messages yet";
+
+  return (
+    <div
+      key={chat.id}
+      className={`chat-item ${selected ? "chat-item-active" : ""}`}
+      onClick={onClick}
+    >
+      <div className="chat-item-content">
+        <div className="chat-info">
+          <div className="avatar-container">
+            <div className={`avatar avatar-regular`}>{avatarInitial}</div>
+            {chat.online && <div className="online-indicator"></div>}
+          </div>
+          <div className="chat-details">
+            <div className="chat-header">
+              <h3 className={`chat-name ${selected ? "chat-name-active" : ""}`}>
+                {displayName}
+              </h3>
+              <span>{`@${displayUsername}`}</span>
+            </div>
+            <div className="chat-footer">
+              <p
+                className={`last-message ${
+                  chat.isTemporary ? "temporary-chat" : ""
+                }`}
+              >
+                {lastMessage}
+              </p>
+              {chat.unread > 0 && (
+                <span className="unread-badge">{chat.unread}</span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatItem;
