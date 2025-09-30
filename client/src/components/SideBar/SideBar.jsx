@@ -61,12 +61,9 @@ const SideBar = () => {
   // Fetch chat rooms on mount
   useEffect(() => {
     const loadChatRooms = async () => {
-      const uid = user?.id || user?._id;
-      if (!uid) return;
-
       try {
         setLoading(true);
-        const chats = await fetchChatRooms(uid);
+        const chats = await fetchChatRooms();
         console.log("Fetched chat rooms:", chats);
         setActiveChats(Array.isArray(chats) ? chats : []);
         if (Array.isArray(chats) && chats.length > 0 && !selectedChat) {
