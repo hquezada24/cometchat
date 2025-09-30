@@ -5,6 +5,7 @@ const loginRoutes = require("./src/routes/loginRoutes");
 const logoutRoutes = require("./src/routes/logoutRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const chatRoomRoutes = require("./src/routes/chatRoomRoutes");
+const chatMessagesRoutes = require("./src/routes/chatMessagesRoutes");
 const { authStatusController } = require("./src/controllers/authController");
 const cors = require("cors");
 require("dotenv").config();
@@ -34,6 +35,7 @@ app.use("/", loginRoutes);
 app.use("/", logoutRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", chatRoomRoutes);
+app.use("/api/chatrooms", chatMessagesRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(
