@@ -1,4 +1,3 @@
-// src/pages/Home/Home.tsx
 import { useEffect, useState } from "react";
 import { MoreVertical, Phone, Video, Send, MessageCircle } from "lucide-react";
 import SideBar from "../../components/SideBar/SideBar";
@@ -19,20 +18,20 @@ const Home = () => {
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
 
-  // Update other user info when selectedChat changes
   useEffect(() => {
     if (!selectedChat || !user) return;
 
-    const other = selectedChat.users.find(
-      (chatMember) => chatMember.id !== user.id
-    );
+    const other = selectedChat.users.find((chatMember) => {
+      const cmId = String(chatMember.id ?? chatMember._id ?? "");
+      const uId = String(user.id ?? user._id ?? "");
+      return cmId && uId && cmId !== uId;
+    });
 
     setOtherUser(other);
     setDisplayName(other?.fullName || "Unknown User");
     setDisplayUsername(other?.username || "");
-    setAvatarInitial(other?.fullName?.charAt(0).toUpperCase() || "?");
+    setAvatarInitial((other?.fullName?.charAt(0) || "?").toUpperCase());
 
-    // Load existing messages
     setMessages(selectedChat.messages || []);
   }, [selectedChat, user]);
 
@@ -44,16 +43,26 @@ const Home = () => {
     setIsSending(true);
 
     try {
-      // Handle temporary chat - create chat room first
       console.log("Selected chat: ", selectedChat);
       if (selectedChat.isTemporary) {
+        // inside handleSendMessage when selectedChat.isTemporary
+        const otherUserId =
+          selectedChat.otherUser?.id ?? selectedChat.otherUser?._id;
+        if (!otherUserId) throw new Error("Recipient id not available");
+
+        console.log(
+          "Sending create chat. selectedChat.otherUser:",
+          selectedChat.otherUser,
+          "current user:",
+          user
+        );
+
         const response = await fetch(`${API_BASE_URL}/api/chatrooms`, {
           method: "POST",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            otherUserId,
             message: messageContent,
           }),
         });
@@ -62,19 +71,12 @@ const Home = () => {
 
         const newChatRoom = await response.json();
 
-        // Update selectedChat to the new permanent chat
         setSelectedChat(newChatRoom);
-
-        // The parent component (SideBar) should refresh chat list
-        // You might want to add a callback or event for this
       } else {
-        // Send message to existing chat
         const newMessage = await sendMessage(selectedChat.id, messageContent);
 
-        // Update messages locally
         setMessages((prev) => [...prev, newMessage]);
 
-        // Update the chat in selectedChat
         setSelectedChat({
           ...selectedChat,
           messages: [...(selectedChat.messages || []), newMessage],
@@ -83,7 +85,6 @@ const Home = () => {
     } catch (error) {
       console.error("Error sending message:", error);
       alert("Failed to send message. Please try again.");
-      // Restore message if failed
       setMessage(messageContent);
     } finally {
       setIsSending(false);
@@ -117,7 +118,7 @@ const Home = () => {
       <SideBar />
 
       <div className="chat-area">
-        {/* Chat Header */}
+        {/* header */}
         <div className="chat-header">
           <div className="chat-header-content">
             <div className="chat-header-left">
@@ -144,7 +145,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Messages */}
+        {/* messages */}
         <div className="messages-container">
           {messages.length === 0 ? (
             <div className="empty-messages-state">
@@ -155,14 +156,16 @@ const Home = () => {
               <div
                 key={msg.id}
                 className={`message-row ${
-                  msg.senderId === user?.id
+                  String(msg.senderId ?? msg.sender?._id) ===
+                  String(user?.id ?? user?._id)
                     ? "message-row-me"
                     : "message-row-them"
                 }`}
               >
                 <div
                   className={`message-bubble ${
-                    msg.senderId === user?.id
+                    String(msg.senderId ?? msg.sender?._id) ===
+                    String(user?.id ?? user?._id)
                       ? "message-bubble-me"
                       : "message-bubble-them"
                   }`}
@@ -177,7 +180,7 @@ const Home = () => {
           )}
         </div>
 
-        {/* Message Input */}
+        {/* input */}
         <div className="input-area">
           <div className="input-container">
             <div className="input-wrapper">
