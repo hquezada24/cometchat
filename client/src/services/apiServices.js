@@ -3,7 +3,7 @@ const API_BASE_URL =
 
 const fetchCurrentUser = async () => {
   const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-    credentials: "include", // No Authorization header needed!
+    credentials: "include",
   });
   if (!response.ok) throw new Error("Failed to fetch profile");
   return response.json();
@@ -11,7 +11,9 @@ const fetchCurrentUser = async () => {
 
 const fetchChatRooms = async (userId) => {
   const response = await fetch(
-    `${API_BASE_URL}/api/chatrooms?userId=${userId}`,
+    `${API_BASE_URL}/api/chatrooms${
+      userId ? `?userId=${encodeURIComponent(userId)}` : ""
+    }`,
     {
       method: "GET",
       credentials: "include",
@@ -19,10 +21,15 @@ const fetchChatRooms = async (userId) => {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch chat rooms");
+    const errTxt = await response.text().catch(() => "");
+    throw new Error("Failed to fetch chat rooms: " + errTxt);
   }
 
-  return response.json();
+  const data = await response.json();
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.data)) return data.data;
+  if (Array.isArray(data.chats)) return data.chats;
+  return data || [];
 };
 
 const searchUsers = async (query) => {
@@ -52,7 +59,7 @@ const searchUsers = async (query) => {
 
 const sendMessage = async (chatId, message) => {
   console.log(
-    `Now sending post to ${API_BASE_URL}/api/chatrooms/${chatId}/messages}`
+    `Now sending post to ${API_BASE_URL}/api/chatrooms/${chatId}/messages`
   );
   const response = await fetch(
     `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
