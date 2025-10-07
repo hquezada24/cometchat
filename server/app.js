@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const authenticate = require("./src/middleware/authMiddleware");
 const createAccountRoutes = require("./src/routes/createAccountRoutes");
 const loginRoutes = require("./src/routes/loginRoutes");
 const logoutRoutes = require("./src/routes/logoutRoutes");
@@ -25,7 +26,7 @@ app.use(cors(corsOptions));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
-app.get("/api/me", authStatusController);
+app.get("/api/me", authenticate, authStatusController);
 app.get("/", (req, res) => {
   res.send("hello");
 });

@@ -2,12 +2,8 @@ const jwt = require("jsonwebtoken");
 
 const authenticate = async (req, res, next) => {
   try {
-    // Option 1: Get token from cookie
+    // Get token from cookie
     const token = req.cookies.token;
-
-    // Option 2: Get token from Authorization header
-    // const authHeader = req.headers.authorization;
-    // const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
     if (!token) {
       return res.status(401).json({ error: "Authentication required" });
@@ -15,6 +11,7 @@ const authenticate = async (req, res, next) => {
 
     // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     req.user = {
       id: decoded.id,
       fullName: decoded.fullName,
