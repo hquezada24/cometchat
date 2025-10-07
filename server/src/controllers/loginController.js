@@ -21,7 +21,12 @@ const loginController = async (req, res) => {
 
     // Create JWT
     const token = jwt.sign(
-      { id: user.id, username: user.username },
+      {
+        id: user.id,
+        fullName: user.fullName,
+        username: user.username,
+        email: user.email,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
