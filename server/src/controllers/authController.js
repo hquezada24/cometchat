@@ -1,24 +1,14 @@
 // controllers/authController.js
-const jwt = require("jsonwebtoken");
 
 const authStatusController = (req, res) => {
-  const token = req.cookies.token; // cookie-parser needed
+  const userId = req.user?.id;
 
-  if (!token) {
-    return res.status(401).json({ authenticated: false });
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.json({
-      authenticated: true,
-      user: {
-        id: decoded.id,
-        fullName: decoded.fullName,
-        username: decoded.username,
-        email: decoded.email,
-      },
-    });
+    res.json({ authenticated: true, user: req.user });
   } catch (err) {
     res.status(401).json({ authenticated: false });
   }
