@@ -43,4 +43,29 @@ const verifyUser = async ({ login }) => {
   }
 };
 
-module.exports = { registerUser, verifyUser };
+const findUserById = async (id) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to find customer: ${error.message}`);
+  }
+};
+
+const updateUser = async (id, updates) => {
+  try {
+    const user = await prisma.user.update({
+      where: { id },
+      data: updates,
+    });
+
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to update user name: ${error.message}`);
+  }
+};
+
+module.exports = { registerUser, verifyUser, findUserById, updateUser };
