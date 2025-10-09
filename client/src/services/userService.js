@@ -7,6 +7,7 @@ import { apiRequest } from "./apiClient";
 export function updateProfile(updates) {
   return apiRequest(`${API_BASE_URL}/profile`, {
     method: "PATCH",
+    credentials: "include",
     body: JSON.stringify(updates),
   });
 }
