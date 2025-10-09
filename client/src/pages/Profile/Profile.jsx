@@ -6,7 +6,7 @@ import { updateProfile } from "../../services/userService";
 import useAuth from "../../context/useAuth";
 
 const ChatProfile = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [email, setEmail] = useState(user.email);
   const [username, setUsername] = useState(user.username);
@@ -29,11 +29,11 @@ const ChatProfile = () => {
     }
 
     try {
-      const updatedUser = await updateProfile(updates);
-      console.log("Profile updated:", updatedUser);
+      await updateProfile(updates);
+      await refreshUser();
       setIsEditing(false);
     } catch (err) {
-      // show toast or inline error
+      console.error("Profile information submission error:", err);
     }
   };
 
