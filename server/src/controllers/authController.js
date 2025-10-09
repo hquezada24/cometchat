@@ -1,6 +1,7 @@
 // controllers/authController.js
+const { findUserById } = require("../models/User");
 
-const authStatusController = (req, res) => {
+const authStatusController = async (req, res) => {
   const userId = req.user?.id;
 
   if (!userId) {
@@ -8,7 +9,8 @@ const authStatusController = (req, res) => {
   }
 
   try {
-    res.json({ authenticated: true, user: req.user });
+    const user = await findUserById(userId);
+    res.json({ authenticated: true, user: user });
   } catch (err) {
     res.status(401).json({ authenticated: false });
   }
