@@ -1,10 +1,11 @@
 const logoutController = async (req, res) => {
   try {
     // Clear the authentication cookie
-    res.clearCookie("authToken", {
+    res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict",
+      // sameSite: "strict",
+      sameSite: "lax",
       path: "/", // Make sure path matches the one used when setting the cookie
     });
 
