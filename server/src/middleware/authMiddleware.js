@@ -1,14 +1,13 @@
 const jwt = require("jsonwebtoken");
 
 const authenticate = async (req, res, next) => {
+  // Get token from cookie
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
   try {
-    // Get token from cookie
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.status(401).json({ error: "Authentication required" });
-    }
-
     // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -23,6 +22,12 @@ const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Authentication error:", error);
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
