@@ -1,8 +1,8 @@
 import "./Profile.css";
-import { ArrowLeft, Pencil, Check } from "lucide-react";
+import { ArrowLeft, Pencil, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { updateProfile } from "../../services/userService";
+import { useState, useEffect } from "react";
+import { updateProfile, checkUsername } from "../../services/userService";
 import useAuth from "../../context/useAuth";
 
 const ChatProfile = () => {
@@ -11,6 +11,9 @@ const ChatProfile = () => {
   const [email, setEmail] = useState(user.email);
   const [username, setUsername] = useState(user.username);
   const [fullName, setFullName] = useState(user.fullName);
+  const [isValid, setIsValid] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
 
   // helper to detect changes
   const getUpdatedFields = () => {
@@ -20,6 +23,44 @@ const ChatProfile = () => {
     if (email !== user.email) updates.email = email;
     return updates;
   };
+
+  const handleChange = (e) => {
+    setUsername(e.target.value);
+  };
+
+  useEffect(() => {
+    if (!isEditing) return; // only run validation when editing
+
+    if (username.length < 3) {
+      setIsValid(false);
+      setResult(null);
+      return;
+    }
+
+    setIsValid(true);
+
+    const controller = new AbortController(); // for cancellation
+    const handler = setTimeout(async () => {
+      setLoading(true);
+      setResult(null);
+
+      try {
+        const data = await checkUsername(username);
+        setResult(data);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setResult("⚠️ Error checking username");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(handler); // cleanup debounce
+      controller.abort(); // cancel fetch if still in flight
+    };
+  }, [username]);
 
   const handleSubmit = async () => {
     const updates = getUpdatedFields();
@@ -35,6 +76,15 @@ const ChatProfile = () => {
     } catch (err) {
       console.error("Profile information submission error:", err);
     }
+  };
+
+  console.log(result);
+
+  const handleReset = () => {
+    setFullName(user.fullName);
+    setUsername(user.username);
+    setEmail(user.email);
+    setIsEditing(false);
   };
 
   return (
@@ -72,6 +122,20 @@ const ChatProfile = () => {
               <label htmlFor="username" className="input-label">
                 Username
               </label>
+
+              {isValid ? null : (
+                <span className="valid">
+                  Must be at least 3 characters long
+                </span>
+              )}
+              {!loading && result ? (
+                result.sameAsCurrent ? null : result.available ? (
+                  <span className="available">{result.message}</span>
+                ) : (
+                  <span className="not-available">{result.message}</span>
+                )
+              ) : null}
+
               <input
                 value={username}
                 id="username"
@@ -86,10 +150,17 @@ const ChatProfile = () => {
 
           <div className="edit-button-container">
             {isEditing ? (
-              <button className="edit-button" onClick={handleSubmit}>
-                Save
-                <Check />
-              </button>
+              <>
+                <button className="edit-button" onClick={handleSubmit}>
+                  <Check />
+                </button>
+                <button
+                  className="edit-button margin-left"
+                  onClick={handleReset}
+                >
+                  <X />
+                </button>
+              </>
             ) : (
               <button
                 className="edit-button"

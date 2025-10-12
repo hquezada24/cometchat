@@ -86,6 +86,10 @@ a {
   transform: translateY(-2px);
 }
 
+.margin-left {
+  margin-left: 5px;
+}
+
 .avatar-container {
   position: relative;
   display: flex;
@@ -140,6 +144,14 @@ a {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
   margin-bottom: 3px;
+}
+
+.available {
+  color: yellowgreen;
+}
+.not-available,
+.valid {
+  color: orangered;
 }
 
 .header-input {
