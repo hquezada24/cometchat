@@ -8,6 +8,7 @@ const userRoutes = require("./src/routes/userRoutes");
 const chatRoomRoutes = require("./src/routes/chatRoomRoutes");
 const chatMessagesRoutes = require("./src/routes/chatMessagesRoutes");
 const profileRoutes = require("./src/routes/profileRoutes");
+const checkUsernameRoutes = require("./src/routes/checkUsernameRoutes");
 const { authStatusController } = require("./src/controllers/authController");
 const cors = require("cors");
 require("dotenv").config();
@@ -39,6 +40,7 @@ app.use("/profile", profileRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", chatRoomRoutes);
 app.use("/api/chatrooms", chatMessagesRoutes);
+app.use("/api/check-username", checkUsernameRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(
