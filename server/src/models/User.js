@@ -5,16 +5,16 @@ const prisma = new PrismaClient();
 
 const registerUser = async (data) => {
   try {
-    // Check for existing customer by email
-    let customer = await prisma.user.findUnique({
+    // Check for existing user by email
+    let user = await prisma.user.findUnique({
       where: { email: data.email },
     });
 
     const password = await genPassword(data.password);
 
-    if (!customer) {
-      // Create new customer
-      customer = await prisma.user.create({
+    if (!user) {
+      // Create new user
+      user = await prisma.user.create({
         data: {
           fullName: data.fullName,
           username: data.username,
@@ -23,9 +23,9 @@ const registerUser = async (data) => {
         },
       });
     }
-    return customer;
+    return user;
   } catch (error) {
-    throw new Error(`Failed to find or create customer: ${error.message}`);
+    throw new Error(`Failed to find or create user: ${error.message}`);
   }
 };
 
@@ -39,7 +39,7 @@ const verifyUser = async ({ login }) => {
 
     return user;
   } catch (error) {
-    throw new Error(`Failed to find customer: ${error.message}`);
+    throw new Error(`Failed to find user: ${error.message}`);
   }
 };
 
@@ -51,7 +51,19 @@ const findUserById = async (id) => {
 
     return user;
   } catch (error) {
-    throw new Error(`Failed to find customer: ${error.message}`);
+    throw new Error(`Failed to find user: ${error.message}`);
+  }
+};
+
+const findUserByUsername = async (username) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to find user: ${error.message}`);
   }
 };
 
@@ -68,4 +80,10 @@ const updateUser = async (id, updates) => {
   }
 };
 
-module.exports = { registerUser, verifyUser, findUserById, updateUser };
+module.exports = {
+  registerUser,
+  verifyUser,
+  findUserById,
+  findUserByUsername,
+  updateUser,
+};
