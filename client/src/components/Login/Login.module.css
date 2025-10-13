@@ -253,6 +253,16 @@
   text-decoration: underline;
 }
 
+.guest {
+  background-color: transparent;
+  border: none;
+  font-weight: 600;
+  color: white;
+}
+.guest:hover {
+  text-decoration: underline;
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
   .loginCard {

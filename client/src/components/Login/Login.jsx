@@ -63,6 +63,26 @@ export default function Login() {
     }
   };
 
+  const logInAsGuest = async () => {
+    try {
+      await login("alberto", "hello");
+
+      // Clear form data
+      setAccountData({
+        login: "",
+        password: "",
+      });
+
+      console.log("logged in successfully");
+      // Navigate to home page
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={styles.loginWrapper}>
       {/* Login container */}
@@ -176,6 +196,9 @@ export default function Login() {
             }
           />
         </form>
+        <button className={styles.guest} onClick={logInAsGuest}>
+          Log in as guest
+        </button>
 
         {/* Divider */}
         <div className={styles.divider}>
