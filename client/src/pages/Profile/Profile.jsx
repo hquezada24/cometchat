@@ -2,7 +2,11 @@ import "./Profile.css";
 import { ArrowLeft, Pencil, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { updateProfile, checkUsername } from "../../services/userService";
+import {
+  updateProfile,
+  checkUsername,
+  checkEmail,
+} from "../../services/userService";
 import useAuth from "../../context/useAuth";
 
 const ChatProfile = () => {
@@ -14,19 +18,7 @@ const ChatProfile = () => {
   const [isValid, setIsValid] = useState(true);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-
-  // helper to detect changes
-  const getUpdatedFields = () => {
-    const updates = {};
-    if (fullName !== user.fullName) updates.fullName = fullName;
-    if (username !== user.username) updates.username = username;
-    if (email !== user.email) updates.email = email;
-    return updates;
-  };
-
-  const handleChange = (e) => {
-    setUsername(e.target.value);
-  };
+  const [emailResult, setEmailResult] = useState(null);
 
   useEffect(() => {
     if (!isEditing) return; // only run validation when editing
@@ -62,6 +54,43 @@ const ChatProfile = () => {
     };
   }, [username]);
 
+  useEffect(() => {
+    if (!isEditing) return; // only run validation when editing
+
+    setIsValid(true);
+
+    const controller = new AbortController(); // for cancellation
+    const handler = setTimeout(async () => {
+      setLoading(true);
+      setEmailResult(null);
+
+      try {
+        const data = await checkEmail(email);
+        setEmailResult(data);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setEmailResult("⚠️ Error checking username");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(handler); // cleanup debounce
+      controller.abort(); // cancel fetch if still in flight
+    };
+  }, [email]);
+
+  // helper to detect changes
+  const getUpdatedFields = () => {
+    const updates = {};
+    if (fullName !== user.fullName) updates.fullName = fullName;
+    if (username !== user.username) updates.username = username;
+    if (email !== user.email) updates.email = email;
+    return updates;
+  };
+
   const handleSubmit = async () => {
     const updates = getUpdatedFields();
     if (Object.keys(updates).length === 0) {
@@ -78,12 +107,12 @@ const ChatProfile = () => {
     }
   };
 
-  console.log(result);
-
   const handleReset = () => {
     setFullName(user.fullName);
     setUsername(user.username);
     setEmail(user.email);
+    setResult(null);
+    setEmailResult(null);
     setIsEditing(false);
   };
 
@@ -129,9 +158,7 @@ const ChatProfile = () => {
                 </span>
               )}
               {!loading && result ? (
-                result.sameAsCurrent ? null : result.available ? (
-                  <span className="available">{result.message}</span>
-                ) : (
+                result.sameAsCurrent ? null : result.available ? null : (
                   <span className="not-available">{result.message}</span>
                 )
               ) : null}
@@ -151,7 +178,14 @@ const ChatProfile = () => {
           <div className="edit-button-container">
             {isEditing ? (
               <>
-                <button className="edit-button" onClick={handleSubmit}>
+                <button
+                  className="edit-button"
+                  onClick={handleSubmit}
+                  disabled={
+                    result?.available === false ||
+                    emailResult?.available === false
+                  }
+                >
                   <Check />
                 </button>
                 <button
@@ -177,13 +211,22 @@ const ChatProfile = () => {
           <div className="info-grid">
             <div className="info-item">
               {isEditing ? (
-                <input
-                  value={email}
-                  id="email"
-                  name="email"
-                  className="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <div className="email-field">
+                  {!loading && emailResult ? (
+                    emailResult.sameAsCurrent ? null : emailResult.available ? null : (
+                      <span className="not-available">
+                        {emailResult.message}
+                      </span>
+                    )
+                  ) : null}
+                  <input
+                    value={email}
+                    id="email"
+                    name="email"
+                    className="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
               ) : (
                 <div className="info-value">{email}</div>
               )}

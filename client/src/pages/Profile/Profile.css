@@ -85,6 +85,14 @@ a {
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
 }
+.edit-button:disabled,
+.edit-button:disabled:hover {
+  transform: none; /* cancel the hover transform */
+  background-color: #e5e7eb;
+  border-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
 
 .margin-left {
   margin-left: 5px;
@@ -198,6 +206,11 @@ a {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   border: 1px solid #e2e8f0;
+}
+
+.email-field {
+  display: flex;
+  flex-direction: column;
 }
 
 .email {
