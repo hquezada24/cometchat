@@ -67,6 +67,18 @@ const findUserByUsername = async (username) => {
   }
 };
 
+const findUserByEmail = async (email) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to find user: ${error.message}`);
+  }
+};
+
 const updateUser = async (id, updates) => {
   try {
     const user = await prisma.user.update({
@@ -85,5 +97,6 @@ module.exports = {
   verifyUser,
   findUserById,
   findUserByUsername,
+  findUserByEmail,
   updateUser,
 };
