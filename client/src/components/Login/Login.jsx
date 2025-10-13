@@ -3,7 +3,7 @@ import { Eye, EyeOff, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
-import useAuth from "../../context/useAuth"; // Import the hook
+import useAuth from "../../hooks/useAuth"; // Import the hook
 import styles from "./Login.module.css";
 
 export default function Login() {

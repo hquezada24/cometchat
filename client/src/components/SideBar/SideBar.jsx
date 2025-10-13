@@ -11,7 +11,7 @@ import {
 import { debounce } from "lodash";
 import { searchUsers, fetchChatRooms } from "../../services/apiServices";
 import "./SideBar.css";
-import useAuth from "../../context/useAuth";
+import useAuth from "../../hooks/useAuth";
 import ChatItem from "../ChatItem/ChatItem";
 // import { createTemporaryChat } from "../../types/chatTypes";
 

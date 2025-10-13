@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MoreVertical, Phone, Video, Send, MessageCircle } from "lucide-react";
 import SideBar from "../../components/SideBar/SideBar";
-import useAuth from "../../context/useAuth";
+import useAuth from "../../hooks/useAuth";
 import { sendMessage } from "../../services/apiServices";
 import "./Home.css";
 

@@ -7,7 +7,7 @@ import {
   checkUsername,
   checkEmail,
 } from "../../services/userService";
-import useAuth from "../../context/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 const ChatProfile = () => {
   const { user, refreshUser } = useAuth();
