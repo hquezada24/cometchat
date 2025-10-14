@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
+
 .loginButton {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -9,6 +11,7 @@
   cursor: pointer;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  font-family: "Fredoka", sans-serif;
   transform: scale(1);
 }
 

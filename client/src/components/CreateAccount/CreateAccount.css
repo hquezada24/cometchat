@@ -1,8 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
+
 .container {
   position: relative;
   z-index: 10;
   width: 100%;
   max-width: 448px;
+  font-family: "Fredoka", sans-serif;
+}
+
+button,
+input {
+  font-family: inherit;
 }
 
 .login-backdrop {
