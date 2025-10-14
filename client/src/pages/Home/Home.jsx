@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { MoreVertical, Phone, Video, Send, MessageCircle } from "lucide-react";
 import SideBar from "../../components/SideBar/SideBar";
 import useAuth from "../../hooks/useAuth";
+import useTheme from "../../hooks/useTheme";
 import { sendMessage } from "../../services/apiServices";
 import "./Home.css";
 
@@ -17,6 +18,7 @@ const Home = () => {
   const [avatarInitial, setAvatarInitial] = useState("");
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!selectedChat || !user) return;
@@ -117,7 +119,7 @@ const Home = () => {
     <div className="chat-container">
       <SideBar />
 
-      <div className="chat-area">
+      <div className="chat-area" data-theme={theme === "dark" ? "dark" : ""}>
         {/* header */}
         <div className="chat-header">
           <div className="chat-header-content">
@@ -126,19 +128,41 @@ const Home = () => {
                 <div className="chat-header-avatar">{avatarInitial}</div>
               </div>
               <div className="chat-header-info">
-                <h2 className="chat-header-name">{displayName}</h2>
-                <p className="chat-header-status">@{displayUsername}</p>
+                <h2
+                  className="chat-header-name"
+                  data-theme={theme === "dark" ? "dark" : ""}
+                >
+                  {displayName}
+                </h2>
+                <p
+                  className="chat-header-username"
+                  data-theme={theme === "dark" ? "dark" : ""}
+                >
+                  @{displayUsername}
+                </p>
               </div>
             </div>
 
             <div className="chat-header-right">
-              <button className="chat-header-button" title="Voice call">
+              <button
+                className="chat-header-button"
+                title="Voice call"
+                data-theme={theme === "dark" ? "dark" : ""}
+              >
                 <Phone size={20} />
               </button>
-              <button className="chat-header-button" title="Video call">
+              <button
+                className="chat-header-button"
+                title="Video call"
+                data-theme={theme === "dark" ? "dark" : ""}
+              >
                 <Video size={20} />
               </button>
-              <button className="chat-header-button" title="More options">
+              <button
+                className="chat-header-button"
+                title="More options"
+                data-theme={theme === "dark" ? "dark" : ""}
+              >
                 <MoreVertical size={20} />
               </button>
             </div>
@@ -169,6 +193,7 @@ const Home = () => {
                       ? "message-bubble-me"
                       : "message-bubble-them"
                   }`}
+                  data-theme={theme === "dark" ? "dark" : ""}
                 >
                   <p className="message-text">{msg.content || msg.text}</p>
                   <p className="message-time">
@@ -181,7 +206,7 @@ const Home = () => {
         </div>
 
         {/* input */}
-        <div className="input-area">
+        <div className="input-area" data-theme={theme === "dark" ? "dark" : ""}>
           <div className="input-container">
             <div className="input-wrapper">
               <input
@@ -192,6 +217,7 @@ const Home = () => {
                 placeholder="Type a message..."
                 className="message-input"
                 disabled={isSending}
+                data-theme={theme === "dark" ? "dark" : ""}
               />
             </div>
             <button

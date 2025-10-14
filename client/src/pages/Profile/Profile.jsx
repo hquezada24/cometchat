@@ -8,6 +8,7 @@ import {
   checkEmail,
 } from "../../services/userService";
 import useAuth from "../../hooks/useAuth";
+import useTheme from "../../hooks/useTheme";
 
 const ChatProfile = () => {
   const { user, refreshUser } = useAuth();
@@ -19,6 +20,7 @@ const ChatProfile = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [emailResult, setEmailResult] = useState(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!isEditing) return; // only run validation when editing
@@ -119,9 +121,16 @@ const ChatProfile = () => {
   return (
     <div className="profile">
       <div className="profile-container">
-        <div className="profile-header">
-          <div className="return">
-            <Link className="return-button" to={"/"}>
+        <div
+          className="profile-header"
+          data-theme={theme === "dark" ? "dark" : ""}
+        >
+          <div className="return" data-theme={theme === "dark" ? "dark" : ""}>
+            <Link
+              className="return-button"
+              to={"/"}
+              data-theme={theme === "dark" ? "dark" : ""}
+            >
               <ArrowLeft size={20} />
             </Link>
           </div>
@@ -140,6 +149,7 @@ const ChatProfile = () => {
                 id="fullName"
                 name="fullName"
                 className="header-input"
+                data-theme={theme === "dark" ? "dark" : ""}
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
@@ -169,6 +179,7 @@ const ChatProfile = () => {
                 name="username"
                 onChange={(e) => setUsername(e.target.value)}
                 className="header-input"
+                data-theme={theme === "dark" ? "dark" : ""}
               />
             </div>
           ) : (
@@ -185,6 +196,7 @@ const ChatProfile = () => {
                     result?.available === false ||
                     emailResult?.available === false
                   }
+                  data-theme={theme === "dark" ? "dark" : ""}
                 >
                   <Check />
                 </button>
@@ -207,9 +219,15 @@ const ChatProfile = () => {
           </div>
         </div>
 
-        <div className="profile-body">
+        <div
+          className="profile-body"
+          data-theme={theme === "dark" ? "dark" : ""}
+        >
           <div className="info-grid">
-            <div className="info-item">
+            <div
+              className="info-item"
+              data-theme={theme === "dark" ? "dark" : ""}
+            >
               {isEditing ? (
                 <div className="email-field">
                   {!loading && emailResult ? (
@@ -224,13 +242,24 @@ const ChatProfile = () => {
                     id="email"
                     name="email"
                     className="email"
+                    data-theme={theme === "dark" ? "dark" : ""}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               ) : (
-                <div className="info-value">{email}</div>
+                <div
+                  className="info-value"
+                  data-theme={theme === "dark" ? "dark" : ""}
+                >
+                  {email}
+                </div>
               )}
-              <div className="info-label">Email</div>
+              <div
+                className="info-label"
+                data-theme={theme === "dark" ? "dark" : ""}
+              >
+                Email
+              </div>
             </div>
           </div>
         </div>

@@ -7,12 +7,15 @@ import {
   MessageCircle,
   MessageCirclePlus,
   ArrowLeft,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { debounce } from "lodash";
 import { searchUsers, fetchChatRooms } from "../../services/apiServices";
 import "./SideBar.css";
 import useAuth from "../../hooks/useAuth";
 import ChatItem from "../ChatItem/ChatItem";
+import useTheme from "../../hooks/useTheme";
 // import { createTemporaryChat } from "../../types/chatTypes";
 
 const SideBar = () => {
@@ -27,6 +30,7 @@ const SideBar = () => {
   const [activeChats, setActiveChats] = useState([]);
   const [temporaryChat, setTemporaryChat] = useState(null);
   const [error, setError] = useState(null);
+  const { theme, toggleTheme } = useTheme();
 
   const debouncedSearch = useMemo(
     () =>
@@ -143,11 +147,15 @@ const SideBar = () => {
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <div className="sidebar-container">
+    <div
+      className="sidebar-container"
+      data-theme={theme === "dark" ? "dark" : ""}
+    >
       <div
         className={`sidebar original ${
           searchContact ? "slide-out" : "slide-in"
         }`}
+        data-theme={theme === "dark" ? "dark" : ""}
       >
         {/* Header */}
         <div className="sidebar-header">
@@ -156,15 +164,26 @@ const SideBar = () => {
               <div className="logo">
                 <MessageCircle size={16} color="white" />
               </div>
-              <h1 className="title">Comet Chat</h1>
+              <h1 className="title" data-theme={theme === "dark" ? "dark" : ""}>
+                Comet Chat
+              </h1>
             </div>
 
             <div className="header-options">
               <button
                 className="new-conversation"
                 onClick={() => setSearchContact(true)}
+                data-theme={theme === "dark" ? "dark" : ""}
               >
                 <MessageCirclePlus size={20} />
+              </button>
+
+              <button
+                className="theme"
+                onClick={() => toggleTheme()}
+                data-theme={theme === "dark" ? "dark" : ""}
+              >
+                {theme === "light" ? <Moon /> : <Sun />}
               </button>
 
               <div className="mobileMenu" ref={menuRef}>
@@ -174,6 +193,7 @@ const SideBar = () => {
                   aria-expanded={isMenuOpen}
                   aria-controls="mobile-navigation"
                   aria-label="Toggle navigation menu"
+                  data-theme={theme === "dark" ? "dark" : ""}
                 >
                   <Menu size={20} />
                 </button>
@@ -182,6 +202,7 @@ const SideBar = () => {
                   className={`mobileNav ${isMenuOpen ? "mobileNavOpen" : ""}`}
                   id="mobile-navigation"
                   aria-label="Mobile navigation"
+                  data-theme={theme === "dark" ? "dark" : ""}
                 >
                   <ul className="mobileNavList">
                     {navigationItems.map((item) => (
@@ -191,6 +212,7 @@ const SideBar = () => {
                           className={`mobileNavLink ${
                             isActiveLink(item.path) ? "activeMobileLink" : ""
                           }`}
+                          data-theme={theme === "dark" ? "dark" : ""}
                         >
                           {item.label}
                         </Link>
@@ -201,7 +223,12 @@ const SideBar = () => {
                       className="mobileNavItem"
                       onClick={handleLogout}
                     >
-                      <p className={`mobileNavLink logout`}>Log out</p>
+                      <p
+                        className={`mobileNavLink logout`}
+                        data-theme={theme === "dark" ? "dark" : ""}
+                      >
+                        Log out
+                      </p>
                     </li>
                   </ul>
                 </nav>
@@ -216,6 +243,7 @@ const SideBar = () => {
               type="text"
               placeholder="Search conversations..."
               className="search-input"
+              data-theme={theme === "dark" ? "dark" : ""}
             />
           </div>
         </div>
@@ -243,6 +271,7 @@ const SideBar = () => {
       {/* Search Contact Panel */}
       <div
         className={`search-contact ${searchContact ? "slide-in" : "slide-out"}`}
+        data-theme={theme === "dark" ? "dark" : ""}
       >
         <div className="search-contact-header">
           <button
@@ -252,6 +281,7 @@ const SideBar = () => {
               setQuery("");
               setResults([]);
             }}
+            data-theme={theme === "dark" ? "dark" : ""}
           >
             <ArrowLeft size={20} />
           </button>
@@ -264,6 +294,7 @@ const SideBar = () => {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search a name or a username"
             className="search-input"
+            data-theme={theme === "dark" ? "dark" : ""}
           />
         </div>
         <div className="search-results">

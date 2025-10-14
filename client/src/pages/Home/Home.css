@@ -6,10 +6,13 @@
   background-color: white;
 }
 
+.chat-area[data-theme="dark"] {
+  background-color: #0f172a;
+}
+
 /* Chat Header */
 .chat-header {
   padding: 16px;
-  background: linear-gradient(to right, #f8fafc, #f1f5f9);
 }
 
 .chat-header-content {
@@ -50,7 +53,7 @@
   font-size: 16px;
 }
 
-.chat-header-status {
+.chat-header-username {
   font-size: 13px;
   color: #64748b;
   margin: 0;
@@ -76,6 +79,25 @@
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   color: #4338ca;
+}
+
+.chat-header-name[data-theme="dark"] {
+  color: #f1f5f9; /* slate-100 */
+}
+
+.chat-header-username[data-theme="dark"] {
+  color: #94a3b8; /* slate-400 */
+}
+
+.chat-header-button[data-theme="dark"] {
+  background-color: transparent;
+  color: #cbd5e1; /* slate-300 */
+}
+
+.chat-header-button[data-theme="dark"]:hover {
+  background-color: #1e293b; /* slate-800 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color: #818cf8; /* indigo-400 */
 }
 
 /* Messages */
@@ -104,7 +126,7 @@
   max-width: 70%;
   padding: 12px 16px;
   border-radius: 18px;
-  font-size: 14px;
+  font-size: 1.1rem;
 }
 
 .message-bubble-me {
@@ -117,13 +139,18 @@
   color: #0f172a;
 }
 
+.message-bubble-them[data-theme="dark"] {
+  background-color: #1e293b; /* slate-800 */
+  color: #f1f5f9; /* slate-100 (light text) */
+}
+
 .message-text {
   margin: 0;
   line-height: 1.4;
 }
 
 .message-time {
-  font-size: 11px;
+  font-size: 1rem;
   margin-top: 4px;
   opacity: 0.8;
 }
@@ -132,6 +159,10 @@
 .input-area {
   padding: 16px;
   border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.input-area[data-theme="dark"] {
   background-color: #f8fafc;
 }
 
@@ -160,6 +191,27 @@
 
 .message-input:focus {
   border-color: #a5b4fc;
+}
+
+.input-area[data-theme="dark"] {
+  background-color: #0f172a; /* slate-900 */
+}
+
+.message-input[data-theme="dark"] {
+  background-color: #1e293b; /* slate-800 */
+  color: #f1f5f9; /* slate-100 for readable text */
+}
+
+.message-input[data-theme="dark"]:focus {
+  border-color: #818cf8; /* indigo-400 for focus */
+  background-color: #111827; /* even darker slate for focus state */
+}
+
+.message-input::placeholder {
+  color: #94a3b8; /* slate-400 for subtle placeholder */
+}
+.message-input[data-theme="dark"]::placeholder {
+  color: #64748b; /* slate-500 for subtle but visible on dark */
 }
 
 .send-button {

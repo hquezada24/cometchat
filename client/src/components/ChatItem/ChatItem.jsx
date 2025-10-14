@@ -1,10 +1,11 @@
 import "./ChatItem.css";
+import useTheme from "../../hooks/useTheme";
 
 const ChatItem = ({ chat, currentUserId, onClick, selected = false }) => {
   const otherUser = chat.users.find(
     (u) => String(u.id ?? u._id) !== String(currentUserId)
   );
-
+  const { theme } = useTheme();
   const displayName = otherUser?.fullName || "Unknown User";
   const displayUsername = otherUser?.username || "";
   const avatarInitial = (displayName.charAt(0) || "?").toUpperCase();
@@ -22,6 +23,7 @@ const ChatItem = ({ chat, currentUserId, onClick, selected = false }) => {
     <div
       key={chat.id}
       className={`chat-item ${selected ? "chat-item-active" : ""}`}
+      data-theme={theme === "dark" ? "dark" : ""}
       onClick={onClick}
     >
       <div className="chat-item-content">
@@ -30,9 +32,15 @@ const ChatItem = ({ chat, currentUserId, onClick, selected = false }) => {
             <div className={`avatar avatar-regular`}>{avatarInitial}</div>
             {chat.online && <div className="online-indicator"></div>}
           </div>
-          <div className="chat-details">
+          <div
+            className="chat-details"
+            data-theme={theme === "dark" ? "dark" : ""}
+          >
             <div className="chat-header">
-              <h3 className={`chat-name ${selected ? "chat-name-active" : ""}`}>
+              <h3
+                className={`chat-name ${selected ? "chat-name-active" : ""}`}
+                data-theme={theme === "dark" ? "dark" : ""}
+              >
                 {displayName}
               </h3>
               <span>{`@${displayUsername}`}</span>

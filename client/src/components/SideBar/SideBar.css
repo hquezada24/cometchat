@@ -26,6 +26,11 @@
   overflow: hidden; /* Added to prevent content overflow */
 }
 
+.sidebar[data-theme="dark"],
+.search-contact[data-theme="dark"] {
+  background-color: #0f172a;
+}
+
 .search-contact {
   z-index: 1000;
 }
@@ -104,8 +109,21 @@
   margin: 0;
 }
 
+.title[data-theme="dark"] {
+  background: linear-gradient(
+    to right,
+    #6366f1,
+    #a855f7
+  ); /* indigo-500 → purple-500 */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
 .new-conversation,
-.return-to-sidebar {
+.return-to-sidebar,
+.theme {
   padding: 8px;
   background-color: transparent;
   border: none;
@@ -113,6 +131,13 @@
   cursor: pointer;
   transition: background-color 0.2s;
   color: #64748b;
+}
+
+.new-conversation[data-theme="dark"],
+.return-to-sidebar[data-theme="dark"],
+.theme[data-theme="dark"],
+.menuButton[data-theme="dark"] {
+  color: #f1f5f9;
 }
 
 .header-button,
@@ -129,8 +154,17 @@
 .header-button:hover,
 .new-conversation:hover,
 .return-to-sidebar:hover,
-.menuButton:hover {
+.menuButton:hover,
+.theme:hover {
   background-color: #f1f5f9;
+}
+
+.header-button[data-theme="dark"]:hover,
+.new-conversation[data-theme="dark"]:hover,
+.return-to-sidebar[data-theme="dark"]:hover,
+.menuButton[data-theme="dark"]:hover,
+.theme[data-theme="dark"]:hover {
+  background-color: #1e293b; /* slate-800 */
 }
 
 /* Search */
@@ -153,6 +187,16 @@
 .search-input:focus {
   background-color: white;
   border-color: #a5b4fc;
+}
+
+.search-input[data-theme="dark"] {
+  background-color: #1e293b; /* slate-800 */
+  color: #f1f5f9; /* slate-100 for readable text */
+}
+
+.search-input[data-theme="dark"]:focus {
+  background-color: #0f172a; /* slate-900, slightly deeper */
+  border-color: #818cf8; /* indigo-400 for focus accent */
 }
 
 .search-icon,
@@ -327,7 +371,11 @@
   transition: all 0.3s ease;
   min-width: 200px;
   border: 1px solid #e2e8f0;
-  z-index: 1000;
+  z-index: 100;
+}
+
+.mobileNav[data-theme="dark"] {
+  background-color: #0f172a;
 }
 
 .mobileNavOpen {
@@ -360,9 +408,18 @@
   position: relative;
 }
 
+.mobileNavLink[data-theme="dark"] {
+  color: #f1f5f9;
+}
+
 .mobileNavLink:hover {
   background-color: #f8fafc;
   color: #4338ca;
+}
+
+.mobileNavLink[data-theme="dark"]:hover {
+  background-color: #1e293b; /* slate-800 */
+  color: #cbd5e1; /* slate-300 */
 }
 
 .mobileNavLink:focus {
@@ -387,6 +444,7 @@
   background-color: #4338ca;
 }
 
-.logout {
+.logout,
+.theme {
   margin: 0;
 }
