@@ -16,6 +16,7 @@ import "./SideBar.css";
 import useAuth from "../../hooks/useAuth";
 import ChatItem from "../ChatItem/ChatItem";
 import useTheme from "../../hooks/useTheme";
+import Navigation from "../Navigation/Navigation";
 // import { createTemporaryChat } from "../../types/chatTypes";
 
 const SideBar = () => {
@@ -126,8 +127,6 @@ const SideBar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const navigationItems = [{ path: "/profile", label: "My Profile" }];
-
   const isActiveLink = (path) => {
     return location.pathname === path;
   };
@@ -139,6 +138,11 @@ const SideBar = () => {
   const selectChat = (chatRoom) => {
     setSelectedChat(chatRoom);
   };
+
+  const navigationItems = [
+    { path: "/profile", label: "My Profile" },
+    { path: "", label: "Log out", onClick: handleLogout },
+  ];
 
   if (error && activeChats.length === 0) {
     return <div className="sidebar">Error: {error}</div>;
@@ -197,41 +201,11 @@ const SideBar = () => {
                 >
                   <Menu size={20} />
                 </button>
-
-                <nav
-                  className={`mobileNav ${isMenuOpen ? "mobileNavOpen" : ""}`}
-                  id="mobile-navigation"
-                  aria-label="Mobile navigation"
-                  data-theme={theme === "dark" ? "dark" : ""}
-                >
-                  <ul className="mobileNavList">
-                    {navigationItems.map((item) => (
-                      <li key={item.path} className="mobileNavItem">
-                        <Link
-                          to={item.path}
-                          className={`mobileNavLink ${
-                            isActiveLink(item.path) ? "activeMobileLink" : ""
-                          }`}
-                          data-theme={theme === "dark" ? "dark" : ""}
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-                    <li
-                      key={"logout"}
-                      className="mobileNavItem"
-                      onClick={handleLogout}
-                    >
-                      <p
-                        className={`mobileNavLink logout`}
-                        data-theme={theme === "dark" ? "dark" : ""}
-                      >
-                        Log out
-                      </p>
-                    </li>
-                  </ul>
-                </nav>
+                <Navigation
+                  navigationItems={navigationItems}
+                  isMenuOpen={isMenuOpen}
+                  isActiveLink={isActiveLink}
+                />
               </div>
             </div>
           </div>
