@@ -77,7 +77,7 @@
   min-width: 0;
 }
 
-.chat-header {
+.chat-info-header {
   display: flex;
   flex-direction: column;
   background-color: transparent;

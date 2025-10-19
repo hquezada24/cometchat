@@ -36,7 +36,7 @@ const ChatItem = ({ chat, currentUserId, onClick, selected = false }) => {
             className="chat-details"
             data-theme={theme === "dark" ? "dark" : ""}
           >
-            <div className="chat-header">
+            <div className="chat-info-header">
               <h3
                 className={`chat-name ${selected ? "chat-name-active" : ""}`}
                 data-theme={theme === "dark" ? "dark" : ""}
