@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { MoreVertical, ChevronDown, Send, MessageCircle } from "lucide-react";
+import { MoreVertical, Send, MessageCircle } from "lucide-react";
 import SideBar from "../../components/SideBar/SideBar";
 import useAuth from "../../hooks/useAuth";
 import useTheme from "../../hooks/useTheme";
 import { sendMessage } from "../../services/apiServices";
-import Navigation from "../../components/Navigation/Navigation";
-import { useLocation } from "react-router-dom";
+import MessageBubble from "../../components/MessageBubble/MessageBubble";
 import "./Home.css";
 
 const API_BASE_URL =
@@ -22,7 +21,6 @@ const Home = () => {
   const [isSending, setIsSending] = useState(false);
   const { theme } = useTheme();
   const [openMenuId, setOpenMenuId] = useState(null);
-  const location = useLocation();
 
   useEffect(() => {
     if (!selectedChat || !user) return;
@@ -131,16 +129,8 @@ const Home = () => {
     return dateString;
   };
 
-  const navigationItems = [{ label: "Edit" }, { label: "Delete" }];
-
   const toggleMenu = (messageId) => {
     setOpenMenuId(openMenuId === messageId ? null : messageId);
-  };
-
-  console.log("isMenuOpen ", openMenuId);
-
-  const isActiveLink = (path) => {
-    return location.pathname === path;
   };
 
   const handleKeyPress = (e) => {
@@ -222,55 +212,33 @@ const Home = () => {
                     <span>{formatDateLabel(date)}</span>
                   </div>
                   {msgs.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`message-row ${
-                        String(msg.senderId ?? msg.sender?._id) ===
-                        String(user?.id ?? user?._id)
-                          ? "message-row-me"
-                          : "message-row-them"
-                      }`}
-                    >
-                      <div
-                        className={`message-bubble ${
+                    <>
+                      <MessageBubble
+                        key={msg.id}
+                        messageRow={
+                          String(msg.senderId ?? msg.sender?._id) ===
+                          String(user?.id ?? user?._id)
+                            ? "message-row-me"
+                            : "message-row-them"
+                        }
+                        messageBubble={
                           String(msg.senderId ?? msg.sender?._id) ===
                           String(user?.id ?? user?._id)
                             ? "message-bubble-me"
                             : "message-bubble-them"
-                        }`}
-                        data-theme={theme === "dark" ? "dark" : ""}
-                      >
-                        <div className="nav-container">
-                          <div className="button-container">
-                            <button
-                              className="options slide-button"
-                              data-theme={theme === "dark" ? "dark" : ""}
-                              onClick={() => toggleMenu(msg.id)}
-                            >
-                              <ChevronDown size={30} />
-                            </button>
-                          </div>
-                          <Navigation
-                            navigationItems={navigationItems}
-                            isMenuOpen={openMenuId === msg.id}
-                            isActiveLink={isActiveLink}
-                            className={`${
-                              String(msg.senderId ?? msg.sender?._id) ===
-                              String(user?.id ?? user?._id)
-                                ? "right"
-                                : "left"
-                            }`}
-                          />
-                        </div>
-                        <p className="message-text">{msg.content}</p>
-                        <p className="message-time">
-                          {new Date(msg.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                    </div>
+                        }
+                        onClick={() => toggleMenu(msg.id)}
+                        isMenuOpen={openMenuId === msg.id}
+                        navClassName={
+                          String(msg.senderId ?? msg.sender?._id) ===
+                          String(user?.id ?? user?._id)
+                            ? "right"
+                            : "left"
+                        }
+                        message={msg.content}
+                        date={msg.createdAt}
+                      />
+                    </>
                   ))}
                 </div>
               )
