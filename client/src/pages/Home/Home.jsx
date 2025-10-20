@@ -236,6 +236,7 @@ const Home = () => {
                             : "left"
                         }
                         message={msg.content}
+                        messageId={msg.id}
                         date={msg.createdAt}
                       />
                     </>
