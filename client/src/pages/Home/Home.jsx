@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { MoreVertical, Phone, Video, Send, MessageCircle } from "lucide-react";
+import { MoreVertical, ChevronDown, Send, MessageCircle } from "lucide-react";
 import SideBar from "../../components/SideBar/SideBar";
 import useAuth from "../../hooks/useAuth";
 import useTheme from "../../hooks/useTheme";
 import { sendMessage } from "../../services/apiServices";
+import Navigation from "../../components/Navigation/Navigation";
+import { useLocation } from "react-router-dom";
 import "./Home.css";
 
 const API_BASE_URL =
@@ -19,6 +21,8 @@ const Home = () => {
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const { theme } = useTheme();
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     if (!selectedChat || !user) return;
@@ -93,6 +97,52 @@ const Home = () => {
     }
   };
 
+  const groupMessagesByDate = (messages) => {
+    const groups = {};
+
+    messages.forEach((msg) => {
+      const date = new Date(msg.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(msg);
+    });
+
+    return groups;
+  };
+
+  const formatDateLabel = (dateString) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const msgDate = new Date(dateString.split(",")[0]); // Parse the date part
+
+    if (msgDate.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (msgDate.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    }
+    return dateString;
+  };
+
+  const navigationItems = [{ label: "Edit" }, { label: "Delete" }];
+
+  const toggleMenu = (messageId) => {
+    setOpenMenuId(openMenuId === messageId ? null : messageId);
+  };
+
+  console.log("isMenuOpen ", openMenuId);
+
+  const isActiveLink = (path) => {
+    return location.pathname === path;
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -121,7 +171,10 @@ const Home = () => {
 
       <div className="chat-area" data-theme={theme === "dark" ? "dark" : ""}>
         {/* header */}
-        <div className="chat-header">
+        <div
+          className="chat-header"
+          data-theme={theme === "dark" ? "dark" : ""}
+        >
           <div className="chat-header-content">
             <div className="chat-header-left">
               <div className="avatar-container">
@@ -146,20 +199,6 @@ const Home = () => {
             <div className="chat-header-right">
               <button
                 className="chat-header-button"
-                title="Voice call"
-                data-theme={theme === "dark" ? "dark" : ""}
-              >
-                <Phone size={20} />
-              </button>
-              <button
-                className="chat-header-button"
-                title="Video call"
-                data-theme={theme === "dark" ? "dark" : ""}
-              >
-                <Video size={20} />
-              </button>
-              <button
-                className="chat-header-button"
                 title="More options"
                 data-theme={theme === "dark" ? "dark" : ""}
               >
@@ -176,32 +215,66 @@ const Home = () => {
               <p>No messages yet. Start the conversation!</p>
             </div>
           ) : (
-            messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`message-row ${
-                  String(msg.senderId ?? msg.sender?._id) ===
-                  String(user?.id ?? user?._id)
-                    ? "message-row-me"
-                    : "message-row-them"
-                }`}
-              >
-                <div
-                  className={`message-bubble ${
-                    String(msg.senderId ?? msg.sender?._id) ===
-                    String(user?.id ?? user?._id)
-                      ? "message-bubble-me"
-                      : "message-bubble-them"
-                  }`}
-                  data-theme={theme === "dark" ? "dark" : ""}
-                >
-                  <p className="message-text">{msg.content || msg.text}</p>
-                  <p className="message-time">
-                    {msg.time || new Date(msg.createdAt).toLocaleTimeString()}
-                  </p>
+            Object.entries(groupMessagesByDate(messages)).map(
+              ([date, msgs]) => (
+                <div key={date}>
+                  <div className="date-divider">
+                    <span>{formatDateLabel(date)}</span>
+                  </div>
+                  {msgs.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`message-row ${
+                        String(msg.senderId ?? msg.sender?._id) ===
+                        String(user?.id ?? user?._id)
+                          ? "message-row-me"
+                          : "message-row-them"
+                      }`}
+                    >
+                      <div
+                        className={`message-bubble ${
+                          String(msg.senderId ?? msg.sender?._id) ===
+                          String(user?.id ?? user?._id)
+                            ? "message-bubble-me"
+                            : "message-bubble-them"
+                        }`}
+                        data-theme={theme === "dark" ? "dark" : ""}
+                      >
+                        <div className="nav-container">
+                          <div className="button-container">
+                            <button
+                              className="options slide-button"
+                              data-theme={theme === "dark" ? "dark" : ""}
+                              onClick={() => toggleMenu(msg.id)}
+                            >
+                              <ChevronDown size={30} />
+                            </button>
+                          </div>
+                          <Navigation
+                            navigationItems={navigationItems}
+                            isMenuOpen={openMenuId === msg.id}
+                            isActiveLink={isActiveLink}
+                            className={`${
+                              String(msg.senderId ?? msg.sender?._id) ===
+                              String(user?.id ?? user?._id)
+                                ? "right"
+                                : "left"
+                            }`}
+                          />
+                        </div>
+                        <p className="message-text">{msg.content}</p>
+                        <p className="message-time">
+                          {new Date(msg.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))
+              )
+            )
           )}
         </div>
 
