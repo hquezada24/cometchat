@@ -2,12 +2,17 @@ import "./Navigation.css";
 import useTheme from "../../hooks/useTheme";
 import { Link } from "react-router-dom";
 
-const Navigation = ({ navigationItems, isMenuOpen, isActiveLink }) => {
+const Navigation = ({
+  navigationItems,
+  isMenuOpen,
+  isActiveLink,
+  className,
+}) => {
   const { theme } = useTheme();
 
   return (
     <nav
-      className={`mobileNav ${isMenuOpen ? "mobileNavOpen" : ""}`}
+      className={`mobileNav  ${isMenuOpen ? "mobileNavOpen" : ""} ${className}`}
       id="mobile-navigation"
       aria-label="Mobile navigation"
       data-theme={theme === "dark" ? "dark" : undefined}
