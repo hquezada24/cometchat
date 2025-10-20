@@ -1,6 +1,7 @@
 // apiServices.js
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+import { apiRequest } from "./apiClient";
 
 const fetchCurrentUser = async () => {
   const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
@@ -58,14 +59,11 @@ const sendMessage = async (chatId, message) => {
   console.log(
     `Now sending post to ${API_BASE_URL}/api/chatrooms/${chatId}/messages`
   );
-  const response = await fetch(
+  const response = await apiRequest(
     `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
     {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         message: message,
       }),
@@ -75,4 +73,29 @@ const sendMessage = async (chatId, message) => {
   return response.json();
 };
 
-export { fetchCurrentUser, fetchChatRooms, searchUsers, sendMessage };
+const modifyMessage = async (chatId, message, messageId) => {
+  console.log(
+    `Now sending patch to ${API_BASE_URL}/api/chatrooms/${chatId}/messages`
+  );
+  const response = await apiRequest(
+    `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      body: JSON.stringify({
+        message: message,
+        messageId: messageId,
+      }),
+    }
+  );
+  if (!response.ok) throw new Error("Failed to modify message");
+  return response.json();
+};
+
+export {
+  fetchCurrentUser,
+  fetchChatRooms,
+  searchUsers,
+  sendMessage,
+  modifyMessage,
+};
