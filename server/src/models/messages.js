@@ -39,4 +39,35 @@ const createMessage = async (chatroomId, userId, content) => {
   return message;
 };
 
-module.exports = { createMessage };
+const modifyMessage = async (chatroomId, userId, messageId, content) => {
+  try {
+    // Verify user is a member of the chatroom
+    const membership = await prisma.chatRoom.findFirst({
+      where: {
+        id: chatroomId,
+        users: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new Error("User is not a member of this chatroom");
+    }
+    const message = await prisma.message.update({
+      where: { id: messageId },
+      data: { content },
+    });
+    return message;
+  } catch (error) {
+    if (error.code === "P2025") {
+      console.error("Message not found");
+      return null;
+    }
+    throw new Error("Could not modify message: ", error);
+  }
+};
+
+module.exports = { createMessage, modifyMessage };
