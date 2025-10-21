@@ -6,12 +6,10 @@ export async function apiRequest(url, options = {}) {
       ...options,
     });
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.message || `Request failed: ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    return await res.json();
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
   } catch (err) {
     console.error("API Request error:", err);
     throw err;
