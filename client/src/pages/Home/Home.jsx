@@ -87,8 +87,7 @@ const Home = () => {
         });
       }
     } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send message. Please try again.");
+      console.error(`Error sending message: ${error}`);
       setMessage(messageContent);
     } finally {
       setIsSending(false);
@@ -138,6 +137,15 @@ const Home = () => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleDeleteMessageLocal = (deletedId) => {
+    // Update both messages state and selectedChat
+    setMessages((prev) => prev.filter((m) => m.id !== deletedId));
+    setSelectedChat((prev) => ({
+      ...prev,
+      messages: prev.messages.filter((m) => m.id !== deletedId),
+    }));
   };
 
   if (!selectedChat) {
@@ -238,6 +246,7 @@ const Home = () => {
                         message={msg.content}
                         messageId={msg.id}
                         date={msg.createdAt}
+                        onDeleteLocal={handleDeleteMessageLocal}
                       />
                     </>
                   ))}
