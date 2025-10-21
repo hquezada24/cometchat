@@ -56,9 +56,6 @@ const searchUsers = async (query) => {
 };
 
 const sendMessage = async (chatId, message) => {
-  console.log(
-    `Now sending post to ${API_BASE_URL}/api/chatrooms/${chatId}/messages`
-  );
   const response = await apiRequest(
     `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
     {
@@ -69,14 +66,11 @@ const sendMessage = async (chatId, message) => {
       }),
     }
   );
-  if (!response.ok) throw new Error("Failed to send message");
-  return response.json();
+
+  return response;
 };
 
 const modifyMessage = async (chatId, message, messageId) => {
-  console.log(
-    `Now sending patch to ${API_BASE_URL}/api/chatrooms/${chatId}/messages`
-  );
   const response = await apiRequest(
     `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
     {
@@ -92,10 +86,30 @@ const modifyMessage = async (chatId, message, messageId) => {
   return response.json();
 };
 
+const deleteMessage = async (chatId, messageId) => {
+  try {
+    const response = await apiRequest(
+      `${API_BASE_URL}/api/chatrooms/${chatId}/messages`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        body: JSON.stringify({
+          messageId: messageId,
+        }),
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to delete message");
+  }
+};
+
 export {
   fetchCurrentUser,
   fetchChatRooms,
   searchUsers,
   sendMessage,
   modifyMessage,
+  deleteMessage,
 };
