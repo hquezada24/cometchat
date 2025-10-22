@@ -84,6 +84,7 @@ const MessageBubble = ({
               navigationItems={navigationItems}
               isMenuOpen={isMenuOpen}
               isActiveLink={isActiveLink}
+              messageBubble={true}
             />
           </div>
         )}

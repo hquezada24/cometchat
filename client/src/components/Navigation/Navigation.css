@@ -1,7 +1,7 @@
 /* Navigation Dropdown */
 .mobileNav {
   position: absolute;
-  bottom: 40px;
+  right: 0;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -12,6 +12,10 @@
   min-width: 200px;
   cursor: pointer;
   border: 1px solid #e2e8f0;
+}
+
+.messageBubble {
+  bottom: 40px;
   right: 50%;
 }
 
