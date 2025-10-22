@@ -45,7 +45,10 @@ const SideBar = () => {
         setLoading(true);
         try {
           const data = await searchUsers(searchQuery);
-          setResults(data.data || []);
+          console.log(data);
+          setResults(
+            data.data.filter((foundUser) => foundUser.id !== user.id) || []
+          );
         } catch (error) {
           console.error("Search error:", error);
           setResults([]);
