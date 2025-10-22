@@ -237,12 +237,6 @@ const Home = () => {
                         }
                         onClick={() => toggleMenu(msg.id)}
                         isMenuOpen={openMenuId === msg.id}
-                        navClassName={
-                          String(msg.senderId ?? msg.sender?._id) ===
-                          String(user?.id ?? user?._id)
-                            ? "right"
-                            : "left"
-                        }
                         message={msg.content}
                         messageId={msg.id}
                         date={msg.createdAt}

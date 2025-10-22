@@ -12,14 +12,7 @@
   min-width: 200px;
   cursor: pointer;
   border: 1px solid #e2e8f0;
-}
-
-.right {
-  right: 0;
-}
-
-.left {
-  left: 0;
+  right: 50%;
 }
 
 .mobileNav[data-theme="dark"] {
