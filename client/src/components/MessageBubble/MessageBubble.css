@@ -12,8 +12,8 @@
 }
 
 .message-bubble {
-  max-width: 70%;
-  padding: 5px 20px;
+  max-width: 50%;
+  padding: 5px 24px;
   border-radius: 18px;
   font-size: 1.1rem;
   position: relative; /* Add this - creates positioning context for absolute children */
@@ -43,7 +43,10 @@
   top: 0;
   right: 0;
   z-index: 102;
-  width: 100%; /* Full width of message bubble */
+  width: 30px; /* Full width of message bubble */
+  height: 30px;
+  display: flex;
+  justify-content: flex-end; /* Changed from 'end' to 'flex-end' for better compatibility */
 }
 
 .button-container {
@@ -87,4 +90,90 @@
   text-align: right;
   font-size: 0.75rem;
   opacity: 0.8;
+}
+
+.message-bubble-me .message-text {
+  text-align: right;
+}
+.message-bubble-them .message-text {
+  text-align: left;
+}
+
+.edit-message-form {
+  display: flex;
+}
+
+/* #message {
+  height: calc(1.1rem + 4px);
+  font-size: 1.1rem;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+} */
+
+#message-textarea {
+  font-size: 1.1rem;
+  font-family: inherit;
+  background-color: transparent;
+  border: none;
+  resize: none;
+}
+
+#message-textarea[data-theme="dark"] {
+  color: #f1f5f9;
+}
+
+#message-textarea:focus {
+  outline: none;
+  border-bottom: 1px solid;
+}
+
+.message-bubble-me #message,
+.message-bubble-me #message-textarea {
+  color: white;
+}
+
+.message-bubble-me #message-textarea {
+  border-bottom: 1px solid white;
+}
+
+#message {
+  outline: none;
+}
+
+.edit-message-buttons {
+  display: flex;
+}
+
+button.done {
+  background-color: #0f172a; /* dark navy */
+  color: #f1f5f9; /* light text */
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+  height: 30px;
+}
+
+button.done:last-child {
+  margin-left: 5px;
+}
+
+button.done:hover {
+  background-color: #1e293b; /* slightly lighter on hover */
+  transform: scale(1.05);
+}
+
+button.done:active {
+  transform: scale(0.97);
+  background-color: #0f172a; /* back to original on click */
+}
+
+button.done svg {
+  stroke-width: 2.5;
 }
