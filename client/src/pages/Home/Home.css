@@ -261,3 +261,31 @@
     padding: 12px;
   }
 }
+
+.empty-chat-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-chat-state svg {
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.empty-chat-state h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-chat-state p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
