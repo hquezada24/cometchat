@@ -1,69 +1,68 @@
-# React + TypeScript + Vite
+# Comet Chat
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Comet Chat** is a real-time messaging web application that allows users to **register, search for other users, and exchange messages** in a clean, modern interface.
 
-Currently, two official plugins are available:
+Built as a full-stack project using **React**, **Express**, **Prisma**, and **PostgreSQL**, it demonstrates end-to-end development skills — from user authentication to database design and API integration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- User Registration & Login — secure authentication with JWT tokens.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Search Users — find other registered users by name or username.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Direct Messaging — send and receive messages in real time.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Profile Management — users can update their personal information directly from their profile page.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Persistent Conversations — all messages are stored in a PostgreSQL database via Prisma ORM.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Dark Mode — implemented through React Context for global state management.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Tech Stack
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Frontend: React (Vite)
+
+- Backend: Node.js + Express
+
+- Database: PostgreSQL with Prisma ORM
+
+- Authentication: JSON Web Tokens (JWT)
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/hquezada24/cometchat.git
+   cd cometchat
+   ```
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+1. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+1. Open in your browser: [http://localhost:5473](http://localhost:5473)
+
+## Live Demo
+
+## Screenshots
+
+![Login](./public/login.png)
+
+![Create Account](./public/createaccount.png)
+
+![Home](./public/home.png)
+
+![Profile](./public/profile.png)
+
+## Contact
+
+Created by [Hugo Quezada](https://www.linkedin.com/in/hugo-quezada-7059091b6/)
