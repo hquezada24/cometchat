@@ -18,10 +18,20 @@ require("dotenv").config();
 // Global Middleware
 app.use(express.json());
 
+const allowedOrigins = [
+  "https://hqcometchat.netlify.app",
+  "http://localhost:5173",
+];
+
 const corsOptions = {
-  origin: "http://localhost:5173", // or whatever your React app's port is
-  optionsSuccessStatus: 200, // For legacy browser support
-  credentials: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  optionsSuccessStatus: 200,
 };
 
 // Use the cors middleware
