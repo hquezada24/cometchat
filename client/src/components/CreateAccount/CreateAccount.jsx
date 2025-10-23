@@ -198,15 +198,6 @@ const CreateAccount = () => {
               </button>
             </div>
           </div>
-          <div className="form-options">
-            <label className="checkbox-wrapper">
-              <input type="checkbox" className="checkbox-input" />
-              <span className="checkbox-label">Remember me</span>
-            </label>
-            <button type="button" className="forgot-password">
-              Forgot password?
-            </button>
-          </div>
 
           <Button type="submit" children={"Launch"} />
         </form>
