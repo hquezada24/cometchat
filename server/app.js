@@ -11,6 +11,9 @@ const profileRoutes = require("./src/routes/profileRoutes");
 const checkUsernameRoutes = require("./src/routes/checkUsernameRoutes");
 const checkEmailRoutes = require("./src/routes/checkEmailRoutes");
 const themeRoutes = require("./src/routes/themeRoutes");
+
+// default users
+const { registerDefaultUsers } = require("./src/models/init");
 const { authStatusController } = require("./src/controllers/authController");
 const cors = require("cors");
 require("dotenv").config();
@@ -28,6 +31,9 @@ app.use(cors(corsOptions));
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
+
+// register default users
+registerDefaultUsers();
 
 app.get("/api/me", authenticate, authStatusController);
 app.get("/", (req, res) => {
