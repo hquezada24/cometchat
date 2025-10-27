@@ -62,6 +62,18 @@ app.use("/api/check-username", checkUsernameRoutes);
 app.use("/api/check-email", checkEmailRoutes);
 app.use("/api/user", themeRoutes);
 
+// Add this temporarily to your server file
+app.get("/api/debug/users", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: { username: true, email: true },
+    });
+    res.json({ users });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(process.env.PORT || 3000, () => {
   console.log(
     `Server running on localhost:${process.env.PORT ? process.env.PORT : 3000}`

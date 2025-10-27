@@ -57,6 +57,7 @@ export default function Login() {
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
+      console.error("Error details:", error.message); // ADD THIS
       setErrors({ login: "Invalid credentials. Please try again." });
     } finally {
       setIsLoading(false);
