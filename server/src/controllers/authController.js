@@ -5,7 +5,7 @@ const authStatusController = async (req, res) => {
   const userId = req.user?.id;
 
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.json({ authenticated: false, user: null });
   }
 
   try {
