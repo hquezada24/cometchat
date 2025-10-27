@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
         method: "GET",
         credentials: "include",
       });
-      if (res.ok) {
-        const userData = await res.json();
+      const userData = await res.json();
+      if (userData.authenticated === true) {
         console.log("auth userData:", userData);
         // Normalize if nested
         const u = userData.user ?? userData;
