@@ -24,8 +24,8 @@ const authenticate = async (req, res, next) => {
     console.error("Authentication error:", error);
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: "/",
     });
     return res.status(401).json({ error: "Invalid or expired token" });
