@@ -6,10 +6,13 @@ export const ThemeContext = createContext(null);
 export const ThemeProvider = ({ children }) => {
   const { isAuthenticated } = useAuth();
   const [theme, setTheme] = useState("light");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      setLoading(false); // ← Ensure loading is false when not authenticated
+      return;
+    }
 
     console.log("This is logged if authenticated");
     const getTheme = async () => {
@@ -27,7 +30,7 @@ export const ThemeProvider = ({ children }) => {
     };
 
     getTheme();
-  }, []);
+  }, [isAuthenticated]);
 
   const switchTheme = async (newTheme) => {
     setTheme(newTheme);
