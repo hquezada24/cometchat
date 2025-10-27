@@ -36,7 +36,7 @@ app.use(cookieParser());
 // register default users
 registerDefaultUsers();
 
-app.get("/api/me", authenticate, authStatusController);
+app.get("/api/me", authStatusController);
 app.get("/", (req, res) => {
   res.send("hello");
 });

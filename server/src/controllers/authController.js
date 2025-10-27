@@ -1,15 +1,20 @@
 // controllers/authController.js
 const { findUserById } = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 const authStatusController = async (req, res) => {
-  const userId = req.user?.id;
+  // Get token from cookie
+  const token = req.cookies.token;
 
-  if (!userId) {
+  if (!token) {
     return res.json({ authenticated: false, user: null });
   }
 
   try {
-    const user = await findUserById(userId);
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await findUserById(decoded.id);
     res.json({ authenticated: true, user: user });
   } catch (err) {
     res.status(401).json({ authenticated: false });
