@@ -45,9 +45,9 @@ const registerDefaultUsers = async () => {
 
         await prisma.user.create({
           data: {
-            fullName: data.fullName,
-            username: data.username,
-            email: data.email,
+            fullName: userData.fullName,
+            username: userData.username,
+            email: userData.email,
             password: password,
           },
         });
