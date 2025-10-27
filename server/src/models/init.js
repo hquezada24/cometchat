@@ -23,7 +23,7 @@ const usersToRegister = [
   },
   {
     fullName: "Sarah",
-    username: "Sarah",
+    username: "sarah",
     email: "contact@sarah.com",
     password: "sarah",
   },
