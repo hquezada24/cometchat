@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
       } else {
         setUser(null);
+        console.log("not authenticated");
         setIsAuthenticated(false);
       }
     } catch (error) {
