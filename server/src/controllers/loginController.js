@@ -35,8 +35,8 @@ const loginController = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       // secure: process.env.NODE_ENV === "production",
-      secure: false, // keep false on localhost
-      sameSite: "lax",
+      secure: true, // keep false on localhost
+      sameSite: "none",
       //sameSite: "none",
       maxAge: 60 * 60 * 1000, // 1 hour
     });
