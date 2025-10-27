@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 export const ThemeContext = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
-  const isAuthenticated = useAuth();
+  const { isAuthenticated } = useAuth();
   const [theme, setTheme] = useState("light");
   const [loading, setLoading] = useState(true);
 
