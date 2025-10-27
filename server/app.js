@@ -23,6 +23,7 @@ app.use(express.json());
 
 const corsOptions = {
   origin: "https://hqcometchat.netlify.app",
+  credentials: true,
   optionsSuccessStatus: 200,
 };
 
