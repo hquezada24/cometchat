@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const { genPassword } = require("../utils/passwordUtils");
 
 const prisma = new PrismaClient();
 
@@ -40,7 +41,17 @@ const registerDefaultUsers = async () => {
       });
 
       if (!existingUser) {
-        await prisma.user.create({ data: userData });
+        const password = await genPassword(userData.password);
+
+        await prisma.user.create({
+          data: {
+            fullName: data.fullName,
+            username: data.username,
+            email: data.email,
+            password: password,
+          },
+        });
+
         console.log(`✅ Created user: ${userData.username}`);
       } else {
         console.log(`⚠️  User already exists: ${userData.username}`);
