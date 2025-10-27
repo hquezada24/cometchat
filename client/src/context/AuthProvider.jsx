@@ -11,8 +11,6 @@ export const AuthProvider = ({ children }) => {
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   const checkAuth = useCallback(async () => {
-    if (!isAuthenticated) return;
-
     setIsLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/me`, {
