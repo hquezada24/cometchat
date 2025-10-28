@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const authenticate = require("./src/middleware/authMiddleware");
 const createAccountRoutes = require("./src/routes/createAccountRoutes");
 const loginRoutes = require("./src/routes/loginRoutes");
 const logoutRoutes = require("./src/routes/logoutRoutes");
@@ -13,7 +12,7 @@ const checkEmailRoutes = require("./src/routes/checkEmailRoutes");
 const themeRoutes = require("./src/routes/themeRoutes");
 
 // default users
-const { registerDefaultUsers } = require("./src/models/init");
+const { main } = require("./src/models/init");
 const { authStatusController } = require("./src/controllers/authController");
 const cors = require("cors");
 require("dotenv").config();
@@ -44,7 +43,7 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 // register default users
-registerDefaultUsers();
+main();
 
 app.get("/api/me", authStatusController);
 app.get("/", (req, res) => {
